@@ -15,16 +15,16 @@
   export default {
     data() {
       return {
-        formData: this.$route.query, // Retrieve data from query params
+        formData: this.$route.query, 
       };
     },
     methods: {
       confirmRegistration() {
-        // Send data to the backend, and navigate to the success page
+       
         this.$router.push('/success');
       },
       modifyDetails() {
-        // Navigate back to the registration form to allow the user to modify their data
+        
         this.$router.push('/');
       },
     },

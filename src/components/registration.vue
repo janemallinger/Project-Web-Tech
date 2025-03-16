@@ -3,15 +3,15 @@
       <h1>Register for a New Account</h1>
       <form @submit.prevent="handleSubmit">
         <div>
-          <label for="name">Name</label>
+          <label for="name">Name </label>
           <input type="text" v-model="formData.name" required />
         </div>
         <div>
-          <label for="email">Email</label>
+          <label for="email">Email </label>
           <input type="email" v-model="formData.email" required />
         </div>
         <div>
-          <label for="password">Password</label>
+          <label for="password">Password </label>
           <input type="password" v-model="formData.password" required />
         </div>
         <button type="submit">Next</button>
