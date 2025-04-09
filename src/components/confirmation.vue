@@ -21,7 +21,7 @@
     methods: {
       confirmRegistration() {
        
-        this.$router.push('/success');
+        this.$router.push('/home');
       },
       modifyDetails() {
         

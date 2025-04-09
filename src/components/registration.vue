@@ -14,7 +14,9 @@
           <label for="password">Password </label>
           <input type="password" v-model="formData.password" required />
         </div>
-        <button type="submit">Next</button>
+        <div>
+          <button type="submit">Next</button>
+        </div>
       </form>
     </div>
   </template>
