@@ -1,28 +1,28 @@
 <template>
     <div class="individual-profile">
-    <h1>{{ name }}</h1>
-    <p><strong>ID:</strong> {{ id }}</p>
-    <p><strong>Occupation:</strong> {{ role }}</p>
-    <p><strong>Available Times:</strong> {{ availableTimes }}</p>
+      <h1>{{ name }}</h1>
+      <p><strong>ID:</strong> {{ id }}</p>
+      <p><strong>Email:</strong> {{ email }}</p>
+      <p><strong>Number:</strong> {{ phoneNumber }}</p>
     </div>
 </template>
 
 <script>
 export default {
   computed: {
-    id () {
-      return this.$route.params.id || 'Unknown';
+    id() {
+      return this.$route.params.id;
     },
     name() {
       return this.$route.query.name || 'Unknown';
     },
-    role() {
-      return this.$route.query.role || 'Unknown';
+    email() {
+      return this.$route.query.email || 'Unknown';
     },
-    availableTimes() {
-      return this.$route.query.availableTimes || 'Unknown';
+    phoneNumber() {
+      return this.$route.query.phoneNumber || 'Unknown';
     },
-  },
+  }
 };
 </script>
 

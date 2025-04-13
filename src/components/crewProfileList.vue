@@ -3,11 +3,11 @@
       <div class="crew-list">
           <div v-for="profile in crewProfiles" :key="profile.id" class="crew-card">
           <h2>{{ profile.name }}</h2>
-          <p>{{ profile.role }}</p>
+          <p>{{ profile.email }}</p>
           <router-link :to="{
               name: 'crewProfile',
               params: { id: profile.id },
-              query: { name: profile.name, role: profile.role, availableTimes: profile.availableTimes }
+              query: { name: profile.name, email: profile.email, phoneNumber: profile.phoneNumber }
               }"
             class="view-profile">View Profile</router-link>
         </div>
@@ -19,13 +19,31 @@
 export default {
 data() {
   return {
-    crewProfiles: [
-      { id: 1, name: 'John Doe', role: 'Camera Operator', availableTimes: 'Mon-Fri 8am-8pm' },
-      { id: 2, name: 'Jane Smith', role: 'Director', availableTimes: 'Tues-Thurs 10am-5pm' },
-      { id: 3, name: 'Sarah Johnson', role: 'Talent', availableTimes: 'Sat-Sun 11am-2pm' },
-    ],
+    crewProfiles: [],
   };
 },
+mounted() {
+  this.fetchCrewProfiles();
+},
+methods: {
+  fetchCrewProfiles() {
+    fetch('https://localhost:8080/frog-crew-web-tech/api/v1/crewMembers')
+    .then(response => response.json()).then(data => {
+      if(data.flag) {
+        this.crewProfiles = data.data.map(profile => ({
+          id: profile.userId,
+          name: profile.fullName,
+          email: profile.email,
+          phoneNumber: profile.phoneNumber,
+        }));
+      } else {
+        console.error('Failed to load profiles', data.message);
+      }
+    }).catch(error => {
+      console.error('Fetch error:', error);
+    });
+  }
+}
 };
 </script>
 

@@ -1,0 +1,406 @@
+openapi: '3.0.3'
+info:
+  title: API Title
+  description: Comprehensive API documentation for managing games, crew members, and authentication.
+  version: '1.0'
+servers:
+  - url: https://localhost:8080/frog-crew-web-tech/api/v1
+    description: Local dev server
+paths:
+  
+  /gameSchedule/games:
+    get:
+      summary: Retrieve all games
+      description: Fetch a list of all scheduled games with their details.
+      responses:
+        '200':
+          description: A list of games successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        gameId:
+                          type: integer
+                        gameName:
+                          type: string
+                        gameDate:
+                          type: string
+                          format: date
+                        gameTime:
+                          type: string
+                        gameLocation:
+                          type: string
+              example:
+                flag: true
+                code: 200
+                message: Find Success
+                data:
+                  - gameId: 1
+                    gameName: Game 1
+                    gameDate: '2023-10-01'
+                    gameTime: '10:00 AM'
+                    gameLocation: Location 1
+                  - gameId: 2
+                    gameName: Game 2
+                    gameDate: '2023-10-02'
+                    gameTime: '11:00 AM'
+                    gameLocation: Location 2
+
+  /gameSchedule/games/{gameId}:
+    get:
+      summary: Retrieve a game by ID
+      description: Fetch details of a specific game using its unique ID.
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          description: The unique identifier of the game to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game details successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      gameId:
+                        type: integer
+                      gameName:
+                        type: string
+                      gameDate:
+                        type: string
+                        format: date
+                      gameTime:
+                        type: string
+                      gameLocation:
+                        type: string
+              example:
+                flag: true
+                code: 200
+                message: Find Success
+                data:
+                  gameId: 1
+                  gameName: Game 1
+                  gameDate: '2023-10-01'
+                  gameTime: '10:00 AM'
+                  gameLocation: Location 1
+  #use case 3 and 6 below
+  /crewMembers:
+    get:
+      summary: Retrieve all crew members
+      description: Fetch a list of all registered crew members with their details.
+      responses:
+        '200':
+          description: A list of crew members successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: integer
+                        fullName:
+                          type: string
+                        email:
+                          type: string
+                          format: email
+                        phoneNumber:
+                          type: string
+              example:
+                flag: true
+                code: 200
+                message: Find Success
+                data:
+                  - userId: 1
+                    fullName: John Doe
+                    email: john.doe@example.com
+                    phoneNumber: '1234567890'
+                  - userId: 2
+                    fullName: Harry Potter
+                    email: Potter.harry@example.com
+                    phoneNumber: '1112223333'
+  
+  /crewMembers/{userId}:
+    get:
+      summary: Retrieve a crew member by ID
+      description: Fetch details of a specific crew member using their unique ID.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The unique identifier of the crew member to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Crew member details successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                      fullName:
+                        type: string
+                      email:
+                        type: string
+                        format: email
+                      phoneNumber:
+                        type: string
+                      role:
+                        type: string
+              example:
+                flag: true
+                code: 200
+                message: Find Success
+                data:
+                  userId: 1
+                  fullName: John Doe
+                  email: john.doe@example.com
+                  phoneNumber: '1234567890'
+                  role: 'some_role_idk'
+
+#use case 7 
+  /availability:
+    post:
+      summary: Add crew member availability
+      description: Submit new availability for a crew member and return the saved availability details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                gameId:
+                  type: integer
+                availability:
+                  type: integer
+                comment:
+                  type: string
+            example:
+              userId: 1
+              gameId: 1
+              availability: 1
+              comment: Will be coming from another game
+      responses:
+        '200':
+          description: Availability successfully added.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                      gameId:
+                        type: integer
+                      availability:
+                        type: integer
+                      comment:
+                        type: string
+              example:
+                flag: true
+                code: 200
+                message: Add Success
+                data:
+                  userId: 1
+                  gameId: 1
+                  availability: 1
+                  comment: Will be coming from another game
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              example:
+                flag: false
+                code: 400
+                message: Provided arguments are invalid, see data for details.
+                data:
+                  userId: User id is required
+                  gameId: Game id is required
+                  availability: Availability is required
+        '404':
+          description: Game or user not found.
+          content:
+            application/json:
+              examples:
+                GameNotFound:
+                  value:
+                    flag: false
+                    code: 404
+                    message: Could not find game with id 1
+                    data: null
+        '409':
+          description: Availability conflict.
+          content:
+            application/json:
+              example:
+                flag: false
+                code: 409
+                message: Availability already exists for user 1 and game 1
+                data: null
+
+  /auth/login:
+    get:
+      summary: User login
+      description: Authenticate a user and return a JWT token upon successful login.
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            format: email
+          description: The email address of the user.
+          example: john.doe@example.com
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The password of the user (clear text).
+          example: password
+      responses:
+        '200':
+          description: User successfully logged in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                      role:
+                        type: string
+                      token:
+                        type: string
+              example:
+                flag: true
+                code: 200
+                message: Login Success
+                data:
+                  userId: 1
+                  role: ADMIN
+                  token: JWT token
+        '401':
+          description: Invalid credentials.
+          content:
+            application/json:
+              example:
+                flag: false
+                code: 401
+                message: Username or password is incorrect
+                data: null
+
+  #use case 14 
+  /admin/inviteCrewMember:
+    post:
+      summary: Invite new crew members
+      description: Admin sends an invitation to new crew members via email to create their profiles.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emails:
+                  type: array
+                  items:
+                    type: string
+                    format: email
+            example:
+              emails: ["crew.member@example.com", "new.member@example.com"]
+      responses:
+        '200':
+          description: Invitations successfully sent.
+          content:
+            application/json:
+              example:
+                flag: true
+                code: 200
+                message: Invitations sent successfully
+                data: null
+        '400':
+          description: Invalid email addresses provided.
+          content:
+            application/json:
+              example:
+                flag: false
+                code: 400
+                message: Invalid email address provided
+                data: null
+        '409':
+          description: Email conflict.
+          content:
+            application/json:
+              example:
+                flag: false
+                code: 409
+                message: Email already exists in the system
+                data: null
