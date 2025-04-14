@@ -1,4 +1,4 @@
-package com.example.frogcrew.Model;
+package com.example.frogcrew.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
