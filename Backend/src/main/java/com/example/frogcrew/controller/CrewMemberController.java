@@ -1,16 +1,15 @@
 package com.example.frogcrew.controller;
 
-import com.example.frogcrew.model.CrewMember;
-import com.example.frogcrew.repository.CrewMemberRepository;
-import org.springframework.web.bind.annotation.PostMapping;
+import com.example.frogcrew.Service.CrewMemberService;
+
 
 public class CrewMemberController {
 
-    private final CrewMemberRepository crewMemberRepository;
+    private final CrewMemberService CrewMemberService;
 
 
-    public CrewMemberController(CrewMemberRepository crewMemberRepository) {
-        this.crewMemberRepository = crewMemberRepository;
+    public CrewMemberController(CrewMemberService CrewMemberService) {
+        this.CrewMemberService = CrewMemberService;
     }
     /**
     @PostMapping()
