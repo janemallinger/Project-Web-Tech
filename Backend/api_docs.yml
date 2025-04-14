@@ -1,6 +1,6 @@
 openapi: '3.0.3'
 info:
-  title: API Title
+  title: Frog Crew
   description: Comprehensive API documentation for managing games, crew members, and authentication.
   version: '1.0'
 servers:
