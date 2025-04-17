@@ -6,6 +6,8 @@ import home from './components/home.vue';
 import crewProfileList from './components/crewProfileList.vue';
 import crewProfile from './components/crewProfile.vue';
 import gameSchedule from './components/gameSchedule.vue';
+import crewForGame from './components/crewForGame.vue';
+import submitAvailability from './components/submitAvailability.vue';
 
 const routes = [
   { path: '/', component: registration, name: 'registration' },
@@ -15,6 +17,8 @@ const routes = [
   { path: '/crewProfileList', component: crewProfileList, name: 'crewProfileList'},
   { path: '/crew/:id', component: crewProfile, name: 'crewProfile' },
   { path: '/schedule', component: gameSchedule, name: 'gameSchedule' },
+  { path: '/crewForGame/:gameId', component: crewForGame, name: 'crewForGame'},
+  { path: '/submitAvailability', component: submitAvailability, name: 'submitAvailability'},
 ];
 
 const router = createRouter({

@@ -17,7 +17,7 @@ export default {
       this.$router.push({ name: 'crewProfileList' });
     },
     viewSchedule() {
-      this.$router.push({ name: 'gameSchedule' }); // make sure this name matches your router config
+      this.$router.push({ name: 'gameSchedule' }); 
     },
   },
 };
@@ -33,10 +33,15 @@ export default {
 
 .button-grouping {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px; /* space between buttons */
-  margin-top: 30px;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* flex-direction: row;
+  align-items: center; */
+  /* gap: 16px; */
+  /* margin-top: 30px; */
 }
 
 button {
@@ -47,9 +52,10 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 button:hover {
-  background-color: darkviolet;
+  background-color: #7700cc;
 }
 </style>

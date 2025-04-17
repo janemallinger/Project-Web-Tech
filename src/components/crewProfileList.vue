@@ -3,7 +3,7 @@
       <div class="crew-list">
           <div v-for="profile in crewProfiles" :key="profile.id" class="crew-card">
           <h2>{{ profile.name }}</h2>
-          <p>{{ profile.email }}</p>
+          <p>{{ profile.position }}</p>
           <router-link :to="{
               name: 'crewProfile',
               params: { id: profile.id },
@@ -17,33 +17,36 @@
 
 <script>
 export default {
-data() {
-  return {
-    crewProfiles: [],
-  };
-},
-mounted() {
-  this.fetchCrewProfiles();
-},
-methods: {
-  fetchCrewProfiles() {
-    fetch('https://localhost:8080/frog-crew-web-tech/api/v1/crewMembers')
-    .then(response => response.json()).then(data => {
-      if(data.flag) {
-        this.crewProfiles = data.data.map(profile => ({
-          id: profile.userId,
-          name: profile.fullName,
-          email: profile.email,
-          phoneNumber: profile.phoneNumber,
-        }));
-      } else {
-        console.error('Failed to load profiles', data.message);
+  data() {
+    return {
+      crewProfiles: [],
+    };
+  },
+  mounted() {
+    this.crewProfiles = [
+      {
+        id: 1,
+        name: "Alex Johnson",
+        position: "Producer",
+        email: "alexj@gmail.com",
+        phoneNumber: "555-1234"
+      },
+      {
+        id: 2,
+        name: "Brittany Smith",
+        position: "Camera",
+        email: "bsmith@gmail.com",
+        phoneNumber: "555-5678"
+      },
+      {
+        id: 3,
+        name: "Carlos Diaz",
+        position: "Talent",
+        email: "carlosdiaz@gmail.com",
+        phoneNumber: "555-9012"
       }
-    }).catch(error => {
-      console.error('Fetch error:', error);
-    });
+    ];
   }
-}
 };
 </script>
 
