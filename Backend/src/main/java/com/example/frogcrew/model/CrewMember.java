@@ -14,7 +14,7 @@ public class CrewMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID userId;
+    private Long userId;
 
     @NotEmpty(message = "First Name may not be empty")
     private String firstName;
@@ -42,11 +42,11 @@ public class CrewMember {
 
     public CrewMember() {}
 
-    public UUID getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

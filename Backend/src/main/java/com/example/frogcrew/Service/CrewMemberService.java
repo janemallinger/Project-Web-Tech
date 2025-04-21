@@ -21,7 +21,7 @@ public class CrewMemberService {
     public List<CrewMember> findAll() {
         return crewMemberRepository.findAll();
     }
-    public CrewMember findById(UUID id) {
+    public CrewMember findById(Long id) {
         return crewMemberRepository.findById(id).orElse(null);
     }
     public CrewMember createMember(CrewMember crewMember) {
