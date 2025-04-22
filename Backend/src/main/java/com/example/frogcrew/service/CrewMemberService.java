@@ -1,12 +1,12 @@
-package com.example.frogcrew.Service;
+package com.example.frogcrew.service;
 
+import com.example.frogcrew.exception.CrewMemberNotFoundException;
 import com.example.frogcrew.model.CrewMember;
 import com.example.frogcrew.repository.CrewMemberRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -22,7 +22,7 @@ public class CrewMemberService {
         return crewMemberRepository.findAll();
     }
     public CrewMember findById(Long id) {
-        return crewMemberRepository.findById(id).orElse(null);
+        return crewMemberRepository.findById(id).orElseThrow(()-> new CrewMemberNotFoundException(id));
     }
     public CrewMember createMember(CrewMember crewMember) {
         return crewMemberRepository.save(crewMember);

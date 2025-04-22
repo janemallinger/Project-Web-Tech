@@ -1,5 +1,6 @@
-package com.example.frogcrew.Service;
+package com.example.frogcrew.service;
 
+import com.example.frogcrew.exception.CrewMemberNotFoundException;
 import com.example.frogcrew.model.CrewMember;
 import com.example.frogcrew.repository.CrewMemberRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -8,15 +9,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CrewMemberServiceTest {
@@ -68,6 +71,19 @@ class CrewMemberServiceTest {
         assertThat(resultCrewMember.getRole()).isEqualTo(a.getRole());
         assertThat(resultCrewMember.getQualifiedPositions()).isEqualTo(a.getQualifiedPositions());
 
+        verify(this.crewMemberRepository, times(1)).findById(1L);
+
+    }
+    @Test
+    void testFindByIDNotFound(){
+        given(crewMemberRepository.findById(Mockito.anyLong())).willReturn(java.util.Optional.empty());
+
+        Throwable thrown = catchThrowable(()->{
+            CrewMember resultCrewMember = this.crewMemberService.findById(1L);
+        });
+
+        assertThat(thrown).isInstanceOf(CrewMemberNotFoundException.class).hasMessage("Could not find crew member with id 1");
+        verify(this.crewMemberRepository, times(1)).findById(1L);
     }
 
     @Test

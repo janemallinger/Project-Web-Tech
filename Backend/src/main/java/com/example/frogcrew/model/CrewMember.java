@@ -41,7 +41,6 @@ public class CrewMember {
     private List<String> qualifiedPositions;
 
     public CrewMember() {}
-
     public Long getUserId() {
         return userId;
     }

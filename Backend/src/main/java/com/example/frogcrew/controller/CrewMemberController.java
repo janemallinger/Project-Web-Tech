@@ -1,12 +1,10 @@
 package com.example.frogcrew.controller;
 
-import com.example.frogcrew.Service.CrewMemberService;
+import com.example.frogcrew.service.CrewMemberService;
 import com.example.frogcrew.model.CrewMember;
 import com.example.frogcrew.system.Result;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
