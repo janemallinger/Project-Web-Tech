@@ -1,38 +1,36 @@
 package com.example.frogcrew.system;
 
-import org.springframework.http.HttpStatus;
-
 public class Result {
-    private boolean success;
-    private HttpStatus status;
+    private boolean flag;
+    private Integer code;
     private String message;
     private Object data;
 
-    public Result(boolean success, HttpStatus status, String message, Object data) {
-        this.success = success;
-        this.status = status;
+    public Result(boolean flag, Integer code, String message, Object data) {
+        this.flag = flag;
+        this.code = code;
         this.message = message;
         this.data = data;
     }
 
-    public Result(boolean success, HttpStatus status, String message) {
-        this(success, status, message, null);
+    public Result(boolean flag, Integer code, String message) {
+        this(flag, code, message, null);
     }
 
-    public boolean isSuccess() {
-        return success;
+    public boolean isFlag() {
+        return flag;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 
-    public HttpStatus getStatus() {
-        return status;
+    public Integer getCode() {
+        return code;
     }
 
-    public void setStatus(HttpStatus status) {
-        this.status = status;
+    public void setCode(Integer code) {
+        this.code = code;
     }
 
     public String getMessage() {

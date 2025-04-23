@@ -8,12 +8,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -93,6 +101,25 @@ class CrewMemberControllerTest {
     }
 
     @Test
-    void findAllCrewMembers() {
+    void testFindAllCrewMembers() throws Exception {
+        given(this.crewMemberService.findAll()).willReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/crewMember").accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.flag").value(true))
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("Find Success"))
+                .andExpect(jsonPath("$.data").value(members));
+
+        ;
+
+    }
+    @Test
+    void testFindAllCrewMembersWhenEmpty() throws Exception {
+        given(this.crewMemberService.findAll()).willReturn(new ArrayList<>(members));
+        this.mockMvc.perform(get("/crewMember").accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.flag").value(true))
+                .andExpect(jsonPath("$.code").value(HttpStatus.NO_CONTENT.value()))
+                .andExpect(jsonPath("$.message").value("No members found"))
+                .andExpect(jsonPath("$.data").isEmpty());
+
     }
 }
