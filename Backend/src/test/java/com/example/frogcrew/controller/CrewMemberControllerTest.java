@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
@@ -22,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -53,7 +57,7 @@ class CrewMemberControllerTest {
         c2.setFirstName("Jane");
         c2.setLastName("Smith");
         c2.setEmail("jane.smith@example.com");
-        c2.setPhoneNumber("9876543210");
+        c2.setPhoneNumber("1112223333");
         c2.setPassword("abcdef");
         c2.setRole("MEMBER");
         c2.setQualifiedPositions(Arrays.asList("Assistant Director", "EDITOR"));
@@ -102,20 +106,26 @@ class CrewMemberControllerTest {
 
     @Test
     void testFindAllCrewMembers() throws Exception {
-        given(this.crewMemberService.findAll()).willReturn(new ArrayList<>());
-        this.mockMvc.perform(get("/crewMember").accept(MediaType.APPLICATION_JSON))
+        given(this.crewMemberService.findAll()).willReturn(new ArrayList<>(members));
+        this.mockMvc.perform(get("/api/v1/crewMember").accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.message").value("Find Success"))
-                .andExpect(jsonPath("$.data").value(members));
-
-        ;
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data", hasSize(5)))
+                .andExpect(jsonPath("$.data[*].userId").value(containsInAnyOrder(1,2,3,4,5)))
+                .andExpect(jsonPath("$.data[*].firstName").value(containsInAnyOrder("John", "Bob", "Alice", "Jane", "Peter")))
+                .andExpect(jsonPath("$.data[*].lastName").value(containsInAnyOrder("Doe", "Brown", "Williams", "Smith", "Jones")))
+                .andExpect(jsonPath("$.data[*].email").value(containsInAnyOrder("john.doe@example.com", "bob.brown@example.com", "alice.williams@example.com", "jane.smith@example.com", "peter.jones@example.com")))
+                .andExpect(jsonPath("$.data[*].phoneNumber").value(containsInAnyOrder("1234567890", "1029384756", "5544332211", "1112223333", "1122334455")))
+                .andExpect(jsonPath("$.data[*].role").value(containsInAnyOrder("ADMIN", "MEMBER", "MEMBER", "MEMBER", "ADMIN")))
+                ;
 
     }
     @Test
     void testFindAllCrewMembersWhenEmpty() throws Exception {
-        given(this.crewMemberService.findAll()).willReturn(new ArrayList<>(members));
-        this.mockMvc.perform(get("/crewMember").accept(MediaType.APPLICATION_JSON))
+        given(this.crewMemberService.findAll()).willReturn(new ArrayList<>());
+        this.mockMvc.perform(get("/api/v1/crewMember").accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.code").value(HttpStatus.NO_CONTENT.value()))
                 .andExpect(jsonPath("$.message").value("No members found"))

@@ -23,10 +23,7 @@ public class CrewMemberController {
 //
 //    }
 
-    @PostMapping
-    public Result createCrewMember(@PathVariable ){
 
-    }
     @GetMapping
     public Result findAllCrewMembers() {
         List<CrewMember> members = this.crewMemberService.findAll();
@@ -37,7 +34,7 @@ public class CrewMemberController {
 
         //use dto to return objects
 
-        return null;
+        return new Result(true, HttpStatus.OK.value(), "Find Success", members);
     }
 
 }
