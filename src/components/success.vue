@@ -5,45 +5,45 @@
     </div>
   </template>
   
-  <script>
-  </script>
+<script></script>
   
-  <style scoped>
-    .registration-success {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f8f8;
-    color: purple;
-    margin: 0;
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    }
+<style scoped>
+  .registration-success {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f8f8;
+  color: purple;
+  margin: 0;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
 
-    h1 {
-    color: purple;
-    margin-bottom: 20px;
-    }
+h1 {
+  color: purple;
+  margin-bottom: 20px;
+}
 
-    p {
-    font-size: 16px;
-    margin-top: 10px;
-    }
+p {
+  font-size: 16px;
+  margin-top: 10px;
+}
 
-    button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: purple;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    }
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: purple;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
 
-    button:hover {
+  &:hover {
     background-color: #7700cc;
-    }
+  }
+}
+
   </style>

@@ -5,6 +5,7 @@
     <div class="button-grouping">
       <button @click="viewProfiles">View Member Profiles</button>
       <button @click="viewSchedule">View Game Schedule</button>
+      <button v-if="isAdmin" @click="inviteCrew">Invite Crew Member</button>
     </div>
   
   </div>
@@ -19,7 +20,15 @@ export default {
     viewSchedule() {
       this.$router.push({ name: 'gameSchedule' }); 
     },
+    inviteCrew() {
+      this.$router.push({ name: 'inviteCrew' })
+    }
   },
+  computed: {
+    isAdmin() {
+      return localStorage.getItem('userRole') === 'admin';
+    }
+  }
 };
 </script>
 
@@ -53,9 +62,10 @@ button {
   border-radius: 5px;
   cursor: pointer;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+  background-color: #7700cc;
+  }
 }
 
-button:hover {
-  background-color: #7700cc;
-}
 </style>

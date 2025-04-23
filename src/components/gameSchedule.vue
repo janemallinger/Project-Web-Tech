@@ -120,9 +120,10 @@ export default {
   padding: 5px 10px;
   border-radius: 5px;
   text-decoration: none;
-}
-.view-crew:hover {
+
+  &:hover {
   background-color: #7700cc;
+  }
 }
 
 .submit-wrapper {
@@ -135,11 +136,13 @@ export default {
   padding: 5px 10px;
   border-radius: 5px;
   text-decoration: none;
+
+  &:hover {
+  background-color: #7700cc;
+  }
 }
 
-.submit-button:hover {
-  background-color: #7700cc;
-}
+
 
 
 

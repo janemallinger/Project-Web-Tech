@@ -8,6 +8,7 @@ import crewProfile from './components/crewProfile.vue';
 import gameSchedule from './components/gameSchedule.vue';
 import crewForGame from './components/crewForGame.vue';
 import submitAvailability from './components/submitAvailability.vue';
+import crewInvite from './components/crewInvite.vue';
 
 const routes = [
   { path: '/', component: registration, name: 'registration' },
@@ -19,11 +20,22 @@ const routes = [
   { path: '/schedule', component: gameSchedule, name: 'gameSchedule' },
   { path: '/crewForGame/:gameId', component: crewForGame, name: 'crewForGame'},
   { path: '/submitAvailability', component: submitAvailability, name: 'submitAvailability'},
+  { path: '/invite', component: crewInvite, name: 'inviteCrew' },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach((to, from, next) => {
+  const role = localStorage.getItem('userRole');
+  if (to.name === 'inviteCrew' && role!== 'admin') {
+    alert('This is an admin feature only.')
+    next({ name: 'home' })
+  } else {
+    next()
+  }
+})
 
 export default router;

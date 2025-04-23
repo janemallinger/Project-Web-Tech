@@ -40,56 +40,57 @@
     },
   };
   </script>
-    <style scoped>
-        .registration-form {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f8f8;
-    color: purple;
-    margin: 0;
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    }
+<style scoped>
+.registration-form {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f8f8;
+  color: purple;
+  margin: 0;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
 
-    h1 {
-    color: purple;
-    margin-bottom: 20px;
-    }
+h1 {
+  color: purple;
+  margin-bottom: 20px;
+}
 
-    form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    }
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
 
-    label {
-    font-size: 14px;
-    margin-bottom: 5px;
-    }
+label {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
 
-    input {
-    padding: 10px;
-    font-size: 14px;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    }
+input {
+  padding: 10px;
+  font-size: 14px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-    button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: purple;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    }
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: purple;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 
-    button:hover {
+  &:hover {
     background-color: #7700cc;
-    }
-  </style>
+  }
+}
+
+</style>

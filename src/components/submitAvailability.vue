@@ -110,11 +110,12 @@ textarea {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
+
+    &:hover {
+    background-color: #7700cc;
+    }
 }
 
-.submit-button:hover {
-    background-color: #7700cc;
-}
 
 .success-message {
     margin-top: 20px;

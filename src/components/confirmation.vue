@@ -30,46 +30,48 @@
     },
   };
   </script>
-    <style scoped>
-    .registration-confirmation {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f8f8;
-    color: purple;
-    margin: 0;
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
-    }
+<style scoped>
+.registration-confirmation {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f8f8;
+  color: purple;
+  margin: 0;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
 
-    h1 {
-    color: purple;
-    margin-bottom: 20px;
-    }
+h1 {
+  color: purple;
+  margin-bottom: 20px;
+}
 
-    div {
-    margin-bottom: 20px;
-    font-size: 16px;
-    }
+div {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
 
-    p {
-    margin: 5px 0;
-    }
+p {
+  margin: 5px 0;
+}
 
-    button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: purple;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 5px;
-    }
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: purple;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
 
-    button:hover {
-    background-color: #7700cc;
-    }
+  &:hover {
+  background-color: #7700cc;
+  }
+}
+
+  
   </style>
