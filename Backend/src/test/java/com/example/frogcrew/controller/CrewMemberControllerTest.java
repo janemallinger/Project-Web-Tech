@@ -1,10 +1,12 @@
 package com.example.frogcrew.controller;
 
+import com.example.frogcrew.exception.CrewMemberNotFoundException;
 import com.example.frogcrew.service.CrewMemberService;
 import com.example.frogcrew.model.CrewMember;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
@@ -24,6 +28,8 @@ import java.util.concurrent.ExecutionException;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -123,6 +129,22 @@ class CrewMemberControllerTest {
 
     }
     @Test
+    void tesFindByIDNotFound() throws Exception {
+        //given
+        Long idToFind = 10L;
+        given(this.crewMemberService.findById(idToFind)).willThrow(new CrewMemberNotFoundException(idToFind));
+
+        //when and then
+        this.mockMvc.perform(get("/api/v1/crewMember/{id}", 10L).accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.flag").value(false))
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.data").isEmpty())
+                .andExpect(jsonPath("$.message").value("Could not find user with id " +idToFind))
+                ;
+
+    }
+
+    @Test
     void testFindAllCrewMembersWhenEmpty() throws Exception {
         given(this.crewMemberService.findAll()).willReturn(new ArrayList<>());
         this.mockMvc.perform(get("/api/v1/crewMember").accept(MediaType.APPLICATION_JSON))
@@ -131,5 +153,30 @@ class CrewMemberControllerTest {
                 .andExpect(jsonPath("$.message").value("No members found"))
                 .andExpect(jsonPath("$.data").isEmpty());
 
+    }
+    @Test
+    void testFindMemberById() throws Exception {
+        given(this.crewMemberService.findById(1L)).willReturn(members.get(0));
+        this.mockMvc.perform(get("/api/v1/crewMember/1").accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.flag").value(true))
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("Found member with Id: 1"))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.data.userId").value(1))
+                .andExpect(jsonPath("$.data.firstName").value("John"))
+                .andExpect(jsonPath("$.data.lastName").value("Doe"))
+                .andExpect(jsonPath("$.data.email").value("john.doe@example.com"));
+    }
+    @Test
+    void testDeleteCrewMember() throws Exception{
+        Long userIdToDelete = 1L;
+        Mockito.doNothing().when(this.crewMemberService).deleteCrewMemberByID(userIdToDelete);
+
+        this.mockMvc.perform(delete("/api/v1/crewMember/1").accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.flag").value(true))
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("Delete Success of crew member with id: "+userIdToDelete));
+
+        verify(this.crewMemberService, times(1)).deleteCrewMemberByID(1L);
     }
 }

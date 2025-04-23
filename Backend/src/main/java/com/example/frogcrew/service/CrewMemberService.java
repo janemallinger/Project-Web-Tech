@@ -24,7 +24,15 @@ public class CrewMemberService {
     public CrewMember findById(Long id) {
         return crewMemberRepository.findById(id).orElseThrow(()-> new CrewMemberNotFoundException(id));
     }
+    public void deleteCrewMemberByID(Long id){
+        if (crewMemberRepository.existsById(id)) {
+            crewMemberRepository.deleteById(id);
+        }
+        throw new CrewMemberNotFoundException(id);
+
+    }
     public CrewMember createMember(CrewMember crewMember) {
         return crewMemberRepository.save(crewMember);
     }
+
 }
