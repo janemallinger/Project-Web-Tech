@@ -1,6 +1,6 @@
 package com.example.frogcrew.service;
 
-import com.example.frogcrew.exception.CrewMemberNotFoundException;
+import com.example.frogcrew.exception.ObjectNotFoundException;
 import com.example.frogcrew.model.CrewMember;
 import com.example.frogcrew.repository.CrewMemberRepository;
 import jakarta.transaction.Transactional;
@@ -22,13 +22,13 @@ public class CrewMemberService {
         return crewMemberRepository.findAll();
     }
     public CrewMember findById(Long id) {
-        return crewMemberRepository.findById(id).orElseThrow(()-> new CrewMemberNotFoundException(id));
+        return crewMemberRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException(id));
     }
     public void deleteCrewMemberByID(Long id){
         if (crewMemberRepository.existsById(id)) {
             crewMemberRepository.deleteById(id);
         }
-        throw new CrewMemberNotFoundException(id);
+        throw new ObjectNotFoundException(id);
 
     }
     public CrewMember createMember(CrewMember crewMember) {

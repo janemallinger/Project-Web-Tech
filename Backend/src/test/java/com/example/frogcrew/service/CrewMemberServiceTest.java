@@ -1,6 +1,6 @@
 package com.example.frogcrew.service;
 
-import com.example.frogcrew.exception.CrewMemberNotFoundException;
+import com.example.frogcrew.exception.ObjectNotFoundException;
 import com.example.frogcrew.model.CrewMember;
 import com.example.frogcrew.repository.CrewMemberRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -114,7 +114,7 @@ class CrewMemberServiceTest {
             CrewMember resultCrewMember = this.crewMemberService.findById(1L);
         });
 
-        assertThat(thrown).isInstanceOf(CrewMemberNotFoundException.class).hasMessage("Could not find crew member with id 1");
+        assertThat(thrown).isInstanceOf(ObjectNotFoundException.class).hasMessage("Could not find user with id 1");
         verify(this.crewMemberRepository, times(1)).findById(1L);
     }
 

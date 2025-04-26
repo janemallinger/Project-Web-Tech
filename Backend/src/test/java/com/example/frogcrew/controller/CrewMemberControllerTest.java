@@ -1,8 +1,9 @@
 package com.example.frogcrew.controller;
 
-import com.example.frogcrew.exception.CrewMemberNotFoundException;
+import com.example.frogcrew.exception.ObjectNotFoundException;
 import com.example.frogcrew.service.CrewMemberService;
 import com.example.frogcrew.model.CrewMember;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -129,15 +131,16 @@ class CrewMemberControllerTest {
 
     }
     @Test
-    void tesFindByIDNotFound() throws Exception {
+    void testFindByIdNotFound() throws Exception {
         //given
         Long idToFind = 10L;
-        given(this.crewMemberService.findById(idToFind)).willThrow(new CrewMemberNotFoundException(idToFind));
+        given(this.crewMemberService.findById(idToFind)).willThrow(new ObjectNotFoundException(idToFind));
+
 
         //when and then
-        this.mockMvc.perform(get("/api/v1/crewMember/{id}", 10L).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/api/v1/crewMember/{id}", idToFind).accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(false))
-                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.data").isEmpty())
                 .andExpect(jsonPath("$.message").value("Could not find user with id " +idToFind))
                 ;
@@ -179,4 +182,14 @@ class CrewMemberControllerTest {
 
         verify(this.crewMemberService, times(1)).deleteCrewMemberByID(1L);
     }
+    public static String asJsonString(final Object obj) {
+
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
