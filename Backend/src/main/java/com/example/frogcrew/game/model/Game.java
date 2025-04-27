@@ -35,7 +35,7 @@ public class Game implements Serializable {
     public Game() {
     }
 
-    public Game(Integer gameId, GameSchedule schedule, LocalDate gameDate, String venue, String opponent) {
+    public Game(Long gameId, GameSchedule schedule, LocalDate gameDate, String venue, String opponent) {
         this.gameId = gameId;
         this.schedule = schedule;
         this.gameDate = gameDate;
@@ -45,11 +45,11 @@ public class Game implements Serializable {
 
 
 
-    public Integer getGameId() {
+    public Long getGameId() {
         return gameId;
     }
 
-    public void setGameId(Integer gameId) {
+    public void setGameId(Long gameId) {
         this.gameId = gameId;
     }
 
