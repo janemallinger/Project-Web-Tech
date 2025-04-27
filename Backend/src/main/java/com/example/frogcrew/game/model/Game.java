@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Game implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer gameId;
+    private Long gameId;
 
     @ManyToOne
     @JoinColumn(name = "scheduleId")
