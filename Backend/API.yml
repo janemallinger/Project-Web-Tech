@@ -168,7 +168,7 @@ paths:
                     example: 200
                   message:
                     type: string
-                    example: "Found member with Id: 2"
+                    example: "Found member with id: 2"
                   data:
                     $ref: '#/components/schemas/CrewMemberCreationResponseDTO'
         '404':

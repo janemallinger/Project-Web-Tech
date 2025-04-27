@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import com.example.frogcrew.util.JsonUtil;
 
@@ -51,6 +52,9 @@ class CrewMemberControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Value("${api.base-path}")
+    private String baseUrl ;
 
 
     List<CrewMember> members = new ArrayList<>();
@@ -128,7 +132,7 @@ class CrewMemberControllerTest {
 
         given(this.crewMemberService.createMember(any(CrewMember.class))).willReturn(member);
 
-        this.mockMvc.perform(post("/api/v1/crewMember")
+        this.mockMvc.perform(post(baseUrl+"/crewMember")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(requestDTO))
                         .accept(MediaType.APPLICATION_JSON))
@@ -161,7 +165,7 @@ class CrewMemberControllerTest {
                     );
                 });
 
-        this.mockMvc.perform(get("/api/v1/crewMember").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get(baseUrl+"/crewMember").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())  // Expect HTTP 200
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.code").value(200))
@@ -184,7 +188,7 @@ class CrewMemberControllerTest {
         given(this.crewMemberService.findAll()).willReturn(new ArrayList<>());
 
         // Act & Assert: Perform GET request and check the response for no members
-        this.mockMvc.perform(get("/api/v1/crewMember").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get(baseUrl+"/crewMember").accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))  // Success flag
                 .andExpect(jsonPath("$.code").value(HttpStatus.NO_CONTENT.value()))  // Status code
                 .andExpect(jsonPath("$.message").value("No members found"))  // Message for no content
@@ -196,7 +200,7 @@ class CrewMemberControllerTest {
         CrewMember c1 = members.get(0);
         given(this.crewMemberService.findById(c1.getUserId())).willReturn(c1);
 
-        this.mockMvc.perform(delete("/api/v1/crewMember/{id}", c1.getUserId()).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(delete(baseUrl+"/crewMember/{id}", c1.getUserId()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.message").value("Delete Success of crew member with id: "+c1.getUserId()));
@@ -208,7 +212,7 @@ class CrewMemberControllerTest {
         doThrow(new ObjectNotFoundException("crew member" , nonExistingId)).when(this.crewMemberService).deleteCrewMemberByID(nonExistingId);
 
 
-        this.mockMvc.perform(delete("/api/v1/crewMember/{id}", nonExistingId).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(delete(baseUrl+"/crewMember/{id}", nonExistingId).accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(false))
                 .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.message").value("Could not find crew member with id 999"));

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/crewMember")
+@RequestMapping("${api.base-path}/crewMember")
 public class CrewMemberController {
 
 
@@ -61,7 +61,7 @@ public class CrewMemberController {
     public Result findMemberById(@PathVariable Long userId) {
         CrewMember foundMember = this.crewMemberService.findById(userId);
         CrewMemberCreationResponseDTO  responseDTO = this.crewMemberToCrewMemberCreationResponseDTO.convert(foundMember);
-        return new Result(true, HttpStatus.OK.value(), "Found member with Id: " + userId, responseDTO);
+        return new Result(true, HttpStatus.OK.value(), "Found member with id: " + userId, responseDTO);
     }
     @DeleteMapping("/{userId}")
     public Result deleteCrewMember(@PathVariable Long userId){

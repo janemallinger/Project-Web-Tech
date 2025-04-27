@@ -1,6 +1,8 @@
 package com.example.frogcrew.game.service;
 
 import com.example.frogcrew.exception.ObjectNotFoundException;
+import com.example.frogcrew.game.converter.GameDtoToGameConverter;
+import com.example.frogcrew.game.dto.GameDTO;
 import com.example.frogcrew.game.model.Game;
 import com.example.frogcrew.game.model.GameSchedule;
 import com.example.frogcrew.game.repository.GameRepository;
@@ -16,10 +18,12 @@ public class GameScheduleService {
 
     private final GameRepository gameRepository;
     private final GameScheduleRepository gameScheduleRepository;
+    private final GameDtoToGameConverter gameDtoToGameConverter;
 
-    public GameScheduleService(GameRepository gameRepository, GameScheduleRepository gameScheduleRepository) {
+    public GameScheduleService(GameRepository gameRepository, GameScheduleRepository gameScheduleRepository, GameDtoToGameConverter gameDtoToGameConverter) {
         this.gameRepository = gameRepository;
         this.gameScheduleRepository = gameScheduleRepository;
+        this.gameDtoToGameConverter = gameDtoToGameConverter;
     }
     public GameSchedule createGameSchedule(GameSchedule gameSchedule) {
         return gameScheduleRepository.save(gameSchedule);
@@ -28,15 +32,15 @@ public class GameScheduleService {
         return gameScheduleRepository.findAll();
 
     }
-    public void addGame(Long gameId , Long scheduleId ){
-        //find game
-        Game game = gameRepository.findById(gameId).orElseThrow(()-> new ObjectNotFoundException("game",gameId));
+    public void addGame(GameDTO requestGame, Long scheduleId ){
         //find schedule
         GameSchedule schedule = gameScheduleRepository.findById(scheduleId).orElseThrow(()-> new ObjectNotFoundException("game schedule",scheduleId));
 
-        //add game to gameschedule
-        schedule.addGame(game);
-        gameScheduleRepository.save(schedule);
+        //construct game
+        Game game = gameDtoToGameConverter.convert(requestGame);
+        game.setSchedule(schedule);
+
+        gameRepository.save(game);
 
     }
 }

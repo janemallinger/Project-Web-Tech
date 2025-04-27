@@ -30,4 +30,8 @@ public class GameSchedule {
         game.setSchedule(this);
         games.add(game);
     }
+
+    public Long getScheduleId() {
+        return scheduleId;
+    }
 }
