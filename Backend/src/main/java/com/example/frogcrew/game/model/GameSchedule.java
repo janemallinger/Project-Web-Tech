@@ -1,20 +1,22 @@
 package com.example.frogcrew.game.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Transactional
 @Entity
 public class GameSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer scheduleId;
+    private Long scheduleId;
 
     private String sport;
     private String season;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "schedule")
+    private List<Game> games = new ArrayList<>();
 
     public GameSchedule(){}
     public void setSport(String sport) {
@@ -23,5 +25,9 @@ public class GameSchedule {
 
     public void setSeason(String season) {
         this.season = season;
+    }
+    public void addGame(Game game){
+        game.setSchedule(this);
+        games.add(game);
     }
 }
