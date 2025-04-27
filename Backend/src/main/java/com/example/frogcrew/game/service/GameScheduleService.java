@@ -1,8 +1,8 @@
 package com.example.frogcrew.game.service;
 
 import com.example.frogcrew.exception.ObjectNotFoundException;
-import com.example.frogcrew.game.converter.GameDtoToGameConverter;
-import com.example.frogcrew.game.dto.GameDTO;
+import com.example.frogcrew.game.converter.GameDtoToGame;
+import com.example.frogcrew.game.dto.GameRequest.GameRequestDto;
 import com.example.frogcrew.game.model.Game;
 import com.example.frogcrew.game.model.GameSchedule;
 import com.example.frogcrew.game.repository.GameRepository;
@@ -18,12 +18,12 @@ public class GameScheduleService {
 
     private final GameRepository gameRepository;
     private final GameScheduleRepository gameScheduleRepository;
-    private final GameDtoToGameConverter gameDtoToGameConverter;
+    private final GameDtoToGame gameDtoToGame;
 
-    public GameScheduleService(GameRepository gameRepository, GameScheduleRepository gameScheduleRepository, GameDtoToGameConverter gameDtoToGameConverter) {
+    public GameScheduleService(GameRepository gameRepository, GameScheduleRepository gameScheduleRepository, GameDtoToGame gameDtoToGame) {
         this.gameRepository = gameRepository;
         this.gameScheduleRepository = gameScheduleRepository;
-        this.gameDtoToGameConverter = gameDtoToGameConverter;
+        this.gameDtoToGame = gameDtoToGame;
     }
     public GameSchedule createGameSchedule(GameSchedule gameSchedule) {
         return gameScheduleRepository.save(gameSchedule);
@@ -32,15 +32,17 @@ public class GameScheduleService {
         return gameScheduleRepository.findAll();
 
     }
-    public void addGame(GameDTO requestGame, Long scheduleId ){
+    public Game addGame( Long scheduleId, GameRequestDto requestGame ){
         //find schedule
         GameSchedule schedule = gameScheduleRepository.findById(scheduleId).orElseThrow(()-> new ObjectNotFoundException("game schedule",scheduleId));
 
         //construct game
-        Game game = gameDtoToGameConverter.convert(requestGame);
+
+        Game game = gameDtoToGame.convert(requestGame);
         game.setSchedule(schedule);
 
-        gameRepository.save(game);
+
+        return gameRepository.save(game);
 
     }
 }

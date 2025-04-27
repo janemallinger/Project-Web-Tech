@@ -34,4 +34,12 @@ public class GameSchedule {
     public Long getScheduleId() {
         return scheduleId;
     }
+
+    public String getSport() {
+        return sport;
+    }
+
+    public String getSeason() {
+        return season;
+    }
 }

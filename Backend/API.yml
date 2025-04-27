@@ -137,8 +137,8 @@ paths:
                     type: string
                     example: "No members found"
                   data:
-                    type: "null"
-                    example: null
+                    type: object
+                    nullable: true
 
   /crewMember/{userId}:
     get:
@@ -188,8 +188,8 @@ paths:
                     type: string
                     example: "Could not find crew member with id 1"
                   data:
-                    type: "null"
-                    example: null
+                    type: object
+                    nullable: true
 
     delete:
       summary: Delete a crew member by userId
@@ -234,10 +234,135 @@ paths:
                     example: 404
                   message:
                     type: string
-                    example: "Could not find crew memeber with id 1"
+                    example: "Could not find crew member with id 1"
                   data:
-                    type: "null"
-                    example: null
+                    type: object
+                    nullable: true
+
+  /gameSchedule:
+    post:
+      summary: Create a new game schedule
+      description: Adds a new game schedule to the system
+      operationId: createGameSchedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameScheduleDto'
+      responses:
+        '200':
+          description: Successfully created game schedule
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: true
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Add Success"
+                  data:
+                    $ref: '#/components/schemas/GameSchedule'
+        '400':
+          description: Bad request (validation errors)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: false
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Provided arguments are invalid, see data for details."
+                  data:
+                    type: object
+                    properties:
+                      sport:
+                        type: string
+                        example: "Sport is required"
+                      season:
+                        type: string
+                        example: "Season is required"
+
+  /gameSchedule/{scheduleId}/games:
+    post:
+      summary: Add a game to an existing game schedule
+      description: Adds a new game to the specified game schedule
+      operationId: addGameToSchedule
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: ID of the game schedule to add the game to
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameRequestDto'
+      responses:
+        '200':
+          description: Successfully added the game to the schedule
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: true
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Add Success"
+                  data:
+                    $ref: '#/components/schemas/GameResponseDto'
+        '400':
+          description: Bad request (validation errors)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: false
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Provided arguments are invalid, see data for details."
+                  data:
+                    type: object
+                    properties:
+                      gameDate:
+                        type: string
+                        example: "Game date is required"
+                      venue:
+                        type: string
+                        example: "Venue is required"
+                      opponent:
+                        type: string
+                        example: "Opponent is required"
+                      isFinalized:
+                        type: string
+                        example: "Finalized status is required"
 
 components:
   schemas:
@@ -276,52 +401,16 @@ components:
           type: string
           description: Phone number of the crew member (10 digits or 999-999-9999 format)
           example: 1112223333
-        password:
-          type: string
-          description: Password for the crew member
-          example: securePassword123
         role:
           type: string
           description: Role of the crew member
-          example: Captain
+          example: Assistant Coach
         positions:
-          type: array
-          items:
-            type: string
-          example:
-            - Producer
-            - Director
+          type: string
+          description: Positions held by the crew member
+          example: Midfielder, Coach
 
     CrewMemberCreationResponseDTO:
-      type: object
-      properties:
-        userId:
-          type: integer
-          example: 2
-        firstName:
-          type: string
-          example: Jane
-        lastName:
-          type: string
-          example: Smith
-        email:
-          type: string
-          example: Jane.Smith@example.com
-        phoneNumber:
-          type: string
-          example: 1112223333
-        role:
-          type: string
-          example: Captain
-        positions:
-          type: array
-          items:
-            type: string
-          example:
-            - Pilot
-            - Engineer
-
-    SimpleCrewMemberResponse:
       type: object
       properties:
         userId:
@@ -336,19 +425,98 @@ components:
         phoneNumber:
           type: string
           example: 1112223333
-
-    Result:
+        role:
+          type: string
+          example: Assistant Coach
+        positions:
+          type: string
+          example: Midfielder, Coach
+    GameSchedule:
       type: object
       properties:
-        flag:
+        scheduleId:
+          type: integer
+          example: 1
+        sport:
+          type: string
+          example: Football
+        season:
+          type: string
+          pattern: "^[0-9]{4}-[0-9]{4}$"
+          example: 2024-2025
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/GameRequestDto'
+
+    GameScheduleDto:
+      type: object
+      properties:
+        sport:
+          type: string
+          example: Football
+        season:
+          type: string
+          example: 2024-2025
+
+    GameRequestDto:
+      type: object
+      properties:
+        gameDate:
+          type: string
+          format: date
+          example: "2025-11-30"
+        venue:
+          type: string
+          example: "Stadium A"
+        opponent:
+          type: string
+          example: "Team B"
+        isFinalized:
           type: boolean
           example: true
-        code:
+
+    GameResponseDto:
+      type: object
+      properties:
+        gameId:
           type: integer
-          example: 200
-        message:
+          example: 123
+        gameDate:
           type: string
-          example: Add Success
-        data:
-          type: object
-          nullable: true
+          format: date
+          example: "2025-11-30"
+        venue:
+          type: string
+          example: "Stadium A"
+        opponent:
+          type: string
+          example: "Team B"
+        isFinalized:
+          type: boolean
+          example: true
+
+    SimpleCrewMemberResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 2
+        fullName:
+          type: string
+          example: "Jane Smith"
+        role:
+          type: string
+          example: "Assistant Coach"
+
+  responses:
+    InvalidRequest:
+      description: The request is invalid due to incorrect parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Invalid request"
