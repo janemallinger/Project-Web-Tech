@@ -14,10 +14,10 @@ public class Game implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer gameId;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "scheduleId")
-//    private GameSchedule schedule;
+
+    @ManyToOne
+    @JoinColumn(name = "scheduleId")
+    private GameSchedule schedule;
 
 
     @NotNull(message = "date is required")
@@ -32,6 +32,18 @@ public class Game implements Serializable {
     @JsonProperty("isFinalized")
     @NotNull(message =  "finalized is required")
     private Boolean isFinalized;
+    public Game() {
+    }
+
+    public Game(Integer gameId, GameSchedule schedule, LocalDate gameDate, String venue, String opponent) {
+        this.gameId = gameId;
+        this.schedule = schedule;
+        this.gameDate = gameDate;
+        this.venue = venue;
+        this.opponent = opponent;
+    }
+
+
 
     public Integer getGameId() {
         return gameId;
@@ -73,13 +85,13 @@ public class Game implements Serializable {
         isFinalized = finalized;
     }
 
-//    public GameSchedule getSchedule() {
-//        return schedule;
-//    }
-//
-//    public void setSchedule(GameSchedule schedule) {
-//        this.schedule = schedule;
-//    }
+    public GameSchedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(GameSchedule schedule) {
+        this.schedule = schedule;
+    }
 
 
 
