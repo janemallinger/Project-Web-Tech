@@ -1,9 +1,11 @@
 package com.example.frogcrew.service;
 
+import com.example.frogcrew.exception.DuplicateEmailException;
 import com.example.frogcrew.exception.ObjectNotFoundException;
 import com.example.frogcrew.model.CrewMember;
 import com.example.frogcrew.repository.CrewMemberRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,14 +27,22 @@ public class CrewMemberService {
         return crewMemberRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException(id));
     }
     public void deleteCrewMemberByID(Long id){
-        if (crewMemberRepository.existsById(id)) {
-            crewMemberRepository.deleteById(id);
+        if (!crewMemberRepository.existsById(id)) {
+            throw new ObjectNotFoundException(id);
         }
-        throw new ObjectNotFoundException(id);
+        crewMemberRepository.deleteById(id);
+
 
     }
     public CrewMember createMember(CrewMember crewMember) {
+
+        if (crewMemberRepository.existsByEmail(crewMember.getEmail())){
+            throw new DuplicateEmailException("Email is already in use.");
+
+        }
+
         return crewMemberRepository.save(crewMember);
+
     }
 
 }

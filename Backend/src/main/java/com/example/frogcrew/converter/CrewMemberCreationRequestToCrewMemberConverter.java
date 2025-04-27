@@ -16,7 +16,7 @@ public class CrewMemberCreationRequestToCrewMemberConverter  implements Converte
         crewMember.setPhoneNumber(source.phoneNumber());
         crewMember.setPassword(source.password());
         crewMember.setRole(source.role());
-        crewMember.setQualifiedPositions(source.position());
+        crewMember.setQualifiedPositions(source.positions());
         return crewMember;
     }
 

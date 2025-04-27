@@ -1,10 +1,10 @@
 package com.example.frogcrew.dto.request;
 
 
-import jakarta.validation.constraints.NotBlank; // Generally preferred for Strings
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Email;    // For email format validation
-import jakarta.validation.constraints.NotEmpty;   // Still correct for the List
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -17,11 +17,11 @@ public record CrewMemberCreationRequestDTO(
         String lastName,
 
         @NotBlank(message = "Email is required.")
-        @Email(message = "Email should be valid.") // Add @Email validation
+        @Email(message = "Email should be valid.")
         String email,
 
         @NotBlank(message = "Phone Number is required.") // Use NotBlank
-        @Pattern(regexp = "\\d{10}|\\d{3}-\\d{3}-\\d{4}", message = "Phone number must be 10 digits or 999-999-9999 format")
+        @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
         String phoneNumber,
 
         @NotBlank(message = "Password is required") // Use NotBlank
@@ -31,7 +31,7 @@ public record CrewMemberCreationRequestDTO(
         String role,
 
         @NotEmpty(message = "Positions is required.")
-        List<String> position // Changed field name to match the example JSON key
+        List<String> positions
 ){
 
 }

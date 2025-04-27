@@ -122,11 +122,9 @@ class CrewMemberControllerTest {
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data", hasSize(5)))
                 .andExpect(jsonPath("$.data[*].userId").value(containsInAnyOrder(1,2,3,4,5)))
-                .andExpect(jsonPath("$.data[*].firstName").value(containsInAnyOrder("John", "Bob", "Alice", "Jane", "Peter")))
-                .andExpect(jsonPath("$.data[*].lastName").value(containsInAnyOrder("Doe", "Brown", "Williams", "Smith", "Jones")))
+                .andExpect(jsonPath("$.data[*].fullName").value(containsInAnyOrder("John Doe", "Jane Smith", "Peter Jones", "Alice Williams", "Bob Brown")))
                 .andExpect(jsonPath("$.data[*].email").value(containsInAnyOrder("john.doe@example.com", "bob.brown@example.com", "alice.williams@example.com", "jane.smith@example.com", "peter.jones@example.com")))
                 .andExpect(jsonPath("$.data[*].phoneNumber").value(containsInAnyOrder("1234567890", "1029384756", "5544332211", "1112223333", "1122334455")))
-                .andExpect(jsonPath("$.data[*].role").value(containsInAnyOrder("ADMIN", "MEMBER", "MEMBER", "MEMBER", "ADMIN")))
                 ;
 
     }

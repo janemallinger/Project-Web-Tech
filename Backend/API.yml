@@ -1,0 +1,354 @@
+openapi: 3.0.0
+info:
+  title: Crew Member API
+  description: API to manage crew members in the system
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Base URL for CrewMember API
+
+paths:
+  /crewMember:
+    post:
+      summary: Create a new crew member
+      description: Adds a new crew member to the system
+      operationId: createCrewMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrewMemberCreationRequestDTO'
+      responses:
+        '200':
+          description: Successfully created crew member
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: true
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Add Success
+                  data:
+                    $ref: '#/components/schemas/CrewMemberCreationResponseDTO'
+        '400':
+          description: Bad request (validation errors)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: false
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Provided arguments are invalid, see data for details."
+                  data:
+                    type: object
+                    properties:
+                      firstName:
+                        type: string
+                        example: "First name is required"
+                      lastName:
+                        type: string
+                        example: "Last name is required"
+                      email:
+                        type: string
+                        example: "Email is required"
+                      phoneNumber:
+                        type: string
+                        example: "Phone number is required"
+                      role:
+                        type: string
+                        example: "Role is required"
+                      positions:
+                        type: string
+                        example: "Positions is required"
+        '409':
+          description: Conflict - Duplicate email detected
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: false
+                  code:
+                    type: integer
+                    example: 409
+                  message:
+                    type: string
+                    example: "Email is already in use."
+                  data:
+                    type: object
+                    nullable: true
+
+    get:
+      summary: Get all crew members
+      description: Retrieves a list of all crew members
+      operationId: getAllCrewMembers
+      responses:
+        '200':
+          description: Successfully retrieved all crew members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: true
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Find Success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SimpleCrewMemberResponse'
+        '204':
+          description: No content found (No crew members)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: true
+                  code:
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+                    example: "No members found"
+                  data:
+                    type: "null"
+                    example: null
+
+  /crewMember/{userId}:
+    get:
+      summary: Get a crew member by userId
+      description: Fetches a specific crew member by their unique userId
+      operationId: getCrewMemberById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the crew member to be retrieved
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved the crew member
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: true
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Found member with Id: 2"
+                  data:
+                    $ref: '#/components/schemas/CrewMemberCreationResponseDTO'
+        '404':
+          description: User not found by the provided ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: false
+                  code:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: "Could not find user with id 1"
+                  data:
+                    type: "null"
+                    example: null
+
+    delete:
+      summary: Delete a crew member by userId
+      description: Deletes a specific crew member by their unique userId
+      operationId: deleteCrewMember
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the crew member to be deleted
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully deleted the crew member
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: true
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Delete Success of crew member with id: 2"
+        '404':
+          description: User not found by the provided ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: false
+                  code:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: "Could not find user with id 1"
+                  data:
+                    type: "null"
+                    example: null
+
+components:
+  schemas:
+    CrewMember:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 2
+        fullName:
+          type: string
+          example: Jane Smith
+        email:
+          type: string
+          example: Jane.Smith@example.com
+        phoneNumber:
+          type: string
+          example: 1112223333
+
+    CrewMemberCreationRequestDTO:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: First name of the crew member
+          example: Jane
+        lastName:
+          type: string
+          description: Last name of the crew member
+          example: Smith
+        email:
+          type: string
+          description: Email of the crew member
+          example: Jane.Smith@example.com
+        phoneNumber:
+          type: string
+          description: Phone number of the crew member (10 digits or 999-999-9999 format)
+          example: 1112223333
+        password:
+          type: string
+          description: Password for the crew member
+          example: securePassword123
+        role:
+          type: string
+          description: Role of the crew member
+          example: Captain
+        positions:
+          type: array
+          items:
+            type: string
+          example:
+            - Producer
+            - Director
+
+    CrewMemberCreationResponseDTO:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 2
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Smith
+        email:
+          type: string
+          example: Jane.Smith@example.com
+        phoneNumber:
+          type: string
+          example: 1112223333
+        role:
+          type: string
+          example: Captain
+        positions:
+          type: array
+          items:
+            type: string
+          example:
+            - Pilot
+            - Engineer
+
+    SimpleCrewMemberResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 2
+        fullName:
+          type: string
+          example: Jane Smith
+        email:
+          type: string
+          example: Jane.Smith@example.com
+        phoneNumber:
+          type: string
+          example: 1112223333
+
+    Result:
+      type: object
+      properties:
+        flag:
+          type: boolean
+          example: true
+        code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Add Success
+        data:
+          type: object
+          nullable: true

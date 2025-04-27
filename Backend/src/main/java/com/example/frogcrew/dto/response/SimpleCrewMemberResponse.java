@@ -1,4 +1,4 @@
-package com.example.frogcrew.dto;
+package com.example.frogcrew.dto.response;
 
 public record SimpleCrewMemberResponse(
         Long userId,
