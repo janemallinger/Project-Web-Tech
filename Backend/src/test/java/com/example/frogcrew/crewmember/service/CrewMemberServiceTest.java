@@ -96,7 +96,7 @@ class CrewMemberServiceTest {
         // Then
         assertThat(thrown)
                 .isInstanceOf(ObjectNotFoundException.class)
-                .hasMessage("Could not find user with id 1");
+                .hasMessage("Could not find crew member with id 1");
         verify(crewMemberRepository, times(1)).findById(Mockito.anyLong());
     }
 
@@ -161,7 +161,7 @@ class CrewMemberServiceTest {
         // Then
         assertThat(thrown)
                 .isInstanceOf(ObjectNotFoundException.class)
-                .hasMessage("Could not find user with id 1");
+                .hasMessage("Could not find crew member with id 1");
         verify(crewMemberRepository, times(1)).existsById(1L);
     }
 }

@@ -205,12 +205,12 @@ class CrewMemberControllerTest {
     @Test
     void deleteCrewMember_whenMemberDoesNotExist() throws Exception {
         Long nonExistingId = 999L;
-        doThrow(new ObjectNotFoundException(nonExistingId)).when(this.crewMemberService).deleteCrewMemberByID(nonExistingId);
+        doThrow(new ObjectNotFoundException("crew member" , nonExistingId)).when(this.crewMemberService).deleteCrewMemberByID(nonExistingId);
 
 
         this.mockMvc.perform(delete("/api/v1/crewMember/{id}", nonExistingId).accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(false))
                 .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath("$.message").value("Could not find user with id 999"));
+                .andExpect(jsonPath("$.message").value("Could not find crew member with id 999"));
     }
 }

@@ -186,7 +186,7 @@ paths:
                     example: 404
                   message:
                     type: string
-                    example: "Could not find user with id 1"
+                    example: "Could not find crew member with id 1"
                   data:
                     type: "null"
                     example: null
@@ -234,7 +234,7 @@ paths:
                     example: 404
                   message:
                     type: string
-                    example: "Could not find user with id 1"
+                    example: "Could not find crew memeber with id 1"
                   data:
                     type: "null"
                     example: null

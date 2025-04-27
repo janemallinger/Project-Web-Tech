@@ -23,11 +23,11 @@ public class CrewMemberService {
         return crewMemberRepository.findAll();
     }
     public CrewMember findById(Long id) {
-        return crewMemberRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException(id));
+        return crewMemberRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("crew member",id));
     }
     public void deleteCrewMemberByID(Long id){
         if (!crewMemberRepository.existsById(id)) {
-            throw new ObjectNotFoundException(id);
+            throw new ObjectNotFoundException("crew member", id);
         }
         crewMemberRepository.deleteById(id);
 
