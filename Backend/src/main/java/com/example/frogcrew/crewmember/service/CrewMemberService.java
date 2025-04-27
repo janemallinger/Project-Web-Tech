@@ -1,11 +1,10 @@
-package com.example.frogcrew.service;
+package com.example.frogcrew.crewmember.service;
 
 import com.example.frogcrew.exception.DuplicateEmailException;
 import com.example.frogcrew.exception.ObjectNotFoundException;
-import com.example.frogcrew.model.CrewMember;
-import com.example.frogcrew.repository.CrewMemberRepository;
+import com.example.frogcrew.crewmember.model.CrewMember;
+import com.example.frogcrew.crewmember.repository.CrewMemberRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

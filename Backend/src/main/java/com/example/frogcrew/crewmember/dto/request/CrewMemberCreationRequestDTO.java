@@ -1,4 +1,4 @@
-package com.example.frogcrew.dto.request;
+package com.example.frogcrew.crewmember.dto.request;
 
 
 import jakarta.validation.constraints.NotBlank;

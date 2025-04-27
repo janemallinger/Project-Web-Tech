@@ -1,7 +1,7 @@
-package com.example.frogcrew.converter;
+package com.example.frogcrew.crewmember.converter;
 
-import com.example.frogcrew.dto.response.SimpleCrewMemberResponse;
-import com.example.frogcrew.model.CrewMember;
+import com.example.frogcrew.crewmember.dto.response.SimpleCrewMemberResponse;
+import com.example.frogcrew.crewmember.model.CrewMember;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

@@ -1,17 +1,16 @@
-package com.example.frogcrew.controller;
+package com.example.frogcrew.crewmember.controller;
 
-import com.example.frogcrew.converter.CrewMemberCreationRequestToCrewMemberConverter;
-import com.example.frogcrew.converter.CrewMemberToCrewMemberCreationResponseDTO;
-import com.example.frogcrew.converter.CrewMemberToSimpleCrewMemberDTO;
-import com.example.frogcrew.dto.response.*;
-import com.example.frogcrew.dto.request.*;
-import com.example.frogcrew.dto.response.CrewMemberCreationResponseDTO;
-import com.example.frogcrew.service.CrewMemberService;
-import com.example.frogcrew.model.CrewMember;
+import com.example.frogcrew.crewmember.converter.CrewMemberCreationRequestToCrewMemberConverter;
+import com.example.frogcrew.crewmember.converter.CrewMemberToCrewMemberCreationResponseDTO;
+import com.example.frogcrew.crewmember.converter.CrewMemberToSimpleCrewMemberDTO;
+import com.example.frogcrew.crewmember.dto.request.CrewMemberCreationRequestDTO;
+import com.example.frogcrew.crewmember.dto.response.SimpleCrewMemberResponse;
+import com.example.frogcrew.crewmember.dto.response.CrewMemberCreationResponseDTO;
+import com.example.frogcrew.crewmember.service.CrewMemberService;
+import com.example.frogcrew.crewmember.model.CrewMember;
 import com.example.frogcrew.system.Result;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/crewMember")
 public class CrewMemberController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CrewMemberController.class);
 
     private final CrewMemberService crewMemberService;
     private final CrewMemberCreationRequestToCrewMemberConverter crewMemberCreationRequestToCrewMemberConverter;
@@ -37,7 +35,6 @@ public class CrewMemberController {
 
     @PostMapping
     public Result createCrewMember(@Valid @RequestBody CrewMemberCreationRequestDTO crewMemberCreationRequestDTO) {
-        logger.info("Received request: {}", crewMemberCreationRequestDTO);
 
         CrewMember newCrewMember = this.crewMemberCreationRequestToCrewMemberConverter.convert(crewMemberCreationRequestDTO);
         CrewMember crewMember = this.crewMemberService.createMember(newCrewMember);

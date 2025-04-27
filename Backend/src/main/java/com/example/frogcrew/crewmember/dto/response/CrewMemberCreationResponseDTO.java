@@ -1,4 +1,4 @@
-package com.example.frogcrew.dto.response;
+package com.example.frogcrew.crewmember.dto.response;
 
 import java.util.List;
 

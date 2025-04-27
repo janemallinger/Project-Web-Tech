@@ -1,6 +1,6 @@
-package com.example.frogcrew.repository;
+package com.example.frogcrew.crewmember.repository;
 
-import com.example.frogcrew.model.CrewMember;
+import com.example.frogcrew.crewmember.model.CrewMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
