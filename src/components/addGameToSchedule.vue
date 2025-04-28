@@ -1,38 +1,38 @@
 <template>
-    <div class="create-schedule">
-        <h1>Create Game Schedule</h1>
+    <div class="add-game">
+        <h1>Add New Game</h1>
 
-        <form @submit.prevent="submitSchedule">
-            <div class="schedule-characteristics">
+        <form @submit.prevent="submitNewGame">
+            <div class="game-characteristics">
                 <label>Sport: </label>
-                <input type="text" v-model="newSchedule.sport" required />
+                <input type="text" v-model="newGame.sport" required />
             </div>
 
-            <div class="schedule-characteristics">
+            <div class="game-characteristics">
                 <label>Date and Time: </label>
-                <input type="datetime-local" v-model="newSchedule.dateTime" required />
+                <input type="datetime-local" v-model="newGame.dateTime" required />
             </div>
 
-            <div class="schedule-characteristics">
+            <div class="game-characteristics">
                 <label>Location: </label>
-                <input type="text" v-model="newSchedule.location" required />
+                <input type="text" v-model="newGame.location" required />
             </div>
 
-            <div class="schedule-characteristics">
+            <div class="game-characteristics">
                 <label>Opponent: </label>
-                <input type="text" v-model="newSchedule.opponent" />
+                <input type="text" v-model="newGame.opponent" />
             </div>
 
-            <div class="schedule-characteristics">
+            <div class="game-characteristics">
                 <label>Required Crew: </label>
-                <input type="text" v-model="newSchedule.requiredCrew" required />
+                <input type="text" v-model="newGame.requiredCrew" required />
             </div>
 
-            <button type="submit" class="submit-button">Save</button>
+            <button type="submit" class="submit-button">Add Game</button>
         </form>
 
-        <div v-if="saved" class="success">
-            Game schedule was saved as a draft
+        <div v-if="saved" class="success-message">
+            New game added successfully
         </div>
     </div>
 </template>
@@ -41,7 +41,7 @@
 export default {
     data() {
         return {
-            newSchedule: {
+            newGame: {
                 sport: '',
                 dateTime: '',
                 location: '',
@@ -52,15 +52,16 @@ export default {
         }
     },
     methods: {
-        submitSchedule() {
-            if(!this.newSchedule.sport || !this.newSchedule.dateTime || !this.newSchedule.location || !this.newSchedule.requiredCrew) {
+        submitNewGame() {
+            if(!this.newGame.sport || !this.newGame.dateTime || !this.newGame.location || !this.newGame.requiredCrew) {
                 alert('Fill out all required fields.')
                 return;
             }
-            console.log('Schedule saved:', this.newSchedule)
-            this.saved = true
 
-            this.newSchedule = {
+            console.log('New game to be added: ', this.newGame)
+            this.saved = true;
+
+            this.newGame = {
                 sport: '',
                 dateTime: '',
                 location: '',
@@ -75,7 +76,7 @@ export default {
 
 <style scoped>
 
-.create-schedule {
+.add-game {
     padding: 30px;
     max-width: 600px;
     margin: 0 auto;
@@ -88,21 +89,20 @@ h1 {
     color: purple;
 }
 
-.schedule-characteristics {
+.game-characteristics {
     margin-bottom: 20px;
 }
 
 label {
-    display: block;
     font-weight: bold;
-    margin-bottom: 6px;
 }
 
 input {
     width: 100%;
     padding: 8px;
+    margin-top: 5px;
+    border-radius: 6px;
     border: 1px solid #ccc;
-    border-radius: 5px;
 }
 
 .submit-button {
@@ -120,7 +120,7 @@ input {
     }
 }
 
-.success {
+.success-message {
     margin-top: 20px;
     padding: 10px;
     background-color: lightgreen;

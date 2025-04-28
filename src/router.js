@@ -11,6 +11,8 @@ import crewForGame from './components/crewForGame.vue';
 import submitAvailability from './components/submitAvailability.vue';
 import crewInvite from './components/crewInvite.vue';
 import createSchedule from './components/createSchedule.vue';
+import addGameToSchedule from './components/addGameToSchedule.vue';
+import scheduleCrew from './components/scheduleCrew.vue';
 
 const routes = [
   { path: '/', component: registration, name: 'registration' },
@@ -24,7 +26,9 @@ const routes = [
   { path: '/crewForGame/:gameId', component: crewForGame, name: 'crewForGame'},
   { path: '/submitAvailability', component: submitAvailability, name: 'submitAvailability'},
   { path: '/invite', component: crewInvite, name: 'inviteCrew' },
-  { path: '/create-schedule', component: createSchedule, name: 'createSchedule'}
+  { path: '/create-schedule', component: createSchedule, name: 'createSchedule' },
+  { path: '/addGameToSchedule', component: addGameToSchedule, name: 'addGameToSchedule'},
+  { path: '/scheduleCrew', component: scheduleCrew, name: 'scheduleCrew' },
 ];
 
 const router = createRouter({

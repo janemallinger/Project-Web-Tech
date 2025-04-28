@@ -18,7 +18,13 @@
           Create New Game Schedule
         </router-link>
 
+        <router-link v-if="isAdmin" :to="{ name: 'addGameToSchedule' }" class="submit-button">
+          Add Game to Schedule
+        </router-link>
 
+        <router-link v-if="isAdmin" :to="{ name: 'scheduleCrew' }" class="submit-button">
+          Schedule Crew
+        </router-link>
       </div>
     </div>
 
@@ -46,6 +52,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
