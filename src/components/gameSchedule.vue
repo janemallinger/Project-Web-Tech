@@ -14,6 +14,11 @@
         Submit Availability
         </router-link>
 
+        <router-link v-if="isAdmin" :to="{ name: 'createSchedule' }" class="submit-button">
+          Create New Game Schedule
+        </router-link>
+
+
       </div>
     </div>
 
@@ -46,6 +51,7 @@ export default {
     return {
       sortKey: 'date',
       games: [],
+      isAdmin: localStorage.getItem('userRole') === 'admin',
     };
   },
   computed: {
@@ -128,6 +134,9 @@ export default {
 
 .submit-wrapper {
   margin-top: 15px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
 }
 
 .submit-button {
@@ -141,9 +150,4 @@ export default {
   background-color: #7700cc;
   }
 }
-
-
-
-
-
 </style>

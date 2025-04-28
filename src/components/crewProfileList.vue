@@ -1,9 +1,28 @@
 <template>
     <div>
+    <div class="sorts-and-filters">
+      <label>
+        Sort By:
+        <select v-model="sortKey">
+          <option value="name">Name</option>
+          <option value="job">Job</option>
+        </select>
+      </label>
+
+      <label>
+        Filter By:
+        <select v-model="filterStatus">
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </label>
+
       <div class="crew-list">
-          <div v-for="profile in crewProfiles" :key="profile.id" class="crew-card">
+          <div v-for="profile in sortedProfiles" :key="profile.id" class="crew-card">
           <h2>{{ profile.name }}</h2>
           <p>{{ profile.position }}</p>
+          <p>{{ profile.status }}</p>
           <router-link :to="{
               name: 'crewProfile',
               params: { id: profile.id },
@@ -14,6 +33,8 @@
         </div>
       </div>
     </div>
+      
+    </div>
 </template>
 
 <script>
@@ -22,6 +43,8 @@ export default {
     return {
       crewProfiles: [],
       isAdmin: localStorage.getItem('userRole') === 'admin',
+      sortKey: 'name',
+      filterStatus: 'all',
     }
   },
   mounted() {
@@ -31,21 +54,24 @@ export default {
         name: "Alex Johnson",
         position: "Producer",
         email: "alexj@gmail.com",
-        phoneNumber: "555-1234"
+        phoneNumber: "555-1234",
+        status: "active"
       },
       {
         id: 2,
         name: "Brittany Smith",
         position: "Camera",
         email: "bsmith@gmail.com",
-        phoneNumber: "555-5678"
+        phoneNumber: "555-5678",
+        status: "inactive"
       },
       {
         id: 3,
         name: "Carlos Diaz",
         position: "Talent",
         email: "carlosdiaz@gmail.com",
-        phoneNumber: "555-9012"
+        phoneNumber: "555-9012",
+        status: "active"
       }
     ]
   },
@@ -62,8 +88,24 @@ export default {
       this.crewProfiles = this.crewProfiles.filter(profile => profile.id !== id)
       alert('Crew member has been deleted')
     }
+  },
+  computed: {
+    sortedProfiles() {
+      let filtered = this.crewProfiles
+
+      if (this.filterStatus !== 'all') {
+        filtered = filtered.filter(profile => profile.status === this.filterStatus)
+      }
+
+      return filtered.sort((a, b) => {
+        if(a[this.sortKey] < b[this.sortKey]) return -1
+        if(a[this.sortKey] > b[this.sortKey]) return 1
+        return 0
+      })
+    }
   }
 }
+
 </script>
 
 <style scoped>
@@ -117,6 +159,27 @@ export default {
     background-color: #7700cc;
   }
 }
+
+.sorts-filters {
+  color: #7700cc;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  &:label {
+    color: #7700cc;
+    margin: 0 10px;
+    font-family: 'Arial', sans-serif;
+  }
+}
+
+
+select {
+  color: #7700cc;
+  margin-left: 5px;
+  padding: 5px;
+}
+
 
 
 </style>
