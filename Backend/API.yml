@@ -8,6 +8,7 @@ servers:
     description: Base URL for CrewMember API
 
 paths:
+#  Use Case 1:  Crew Member Creates Crew Member Profile
   /crewMember:
     post:
       summary: Create a new crew member
@@ -95,6 +96,7 @@ paths:
                     type: object
                     nullable: true
 
+#    Use case 16 : Admin views crew members
     get:
       summary: Get all crew members
       description: Retrieves a list of all crew members
@@ -140,6 +142,8 @@ paths:
                     type: object
                     nullable: true
 
+
+#  Use case 3: Crew Member Views A Crew Member’s Profile
   /crewMember/{userId}:
     get:
       summary: Get a crew member by userId
@@ -191,6 +195,7 @@ paths:
                     type: object
                     nullable: true
 
+#  Use case 15: Admin Deletes Crew Member
     delete:
       summary: Delete a crew member by userId
       description: Deletes a specific crew member by their unique userId
@@ -239,6 +244,7 @@ paths:
                     type: object
                     nullable: true
 
+  #Use case 18: Admin Creates Game Schedule
   /gameSchedule:
     post:
       summary: Create a new game schedule
@@ -295,6 +301,7 @@ paths:
                         type: string
                         example: "Season is required"
 
+#Use case 20: Admin adds game to game schedule
   /gameSchedule/{scheduleId}/games:
     post:
       summary: Add a game to an existing game schedule
@@ -363,6 +370,58 @@ paths:
                       isFinalized:
                         type: string
                         example: "Finalized status is required"
+#  Use case 5:  Crew Member Views General Game Schedule
+  /games:
+      get:
+        summary: Get all games
+        description: Retrieve a list of all games with their schedule, venue, opponent, and status.
+        tags:
+          - Games
+        responses:
+          '200':
+            description: Successfully retrieved list of games
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                      example: true
+                    status:
+                      type: integer
+                      example: 200
+                    message:
+                      type: string
+                      example: "Find Success"
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          gameId:
+                            type: integer
+                            example: 1
+                          scheduleId:
+                            type: integer
+                            example: 10
+                          gameDate:
+                            type: string
+                            format: date-time
+                            example: "2025-04-28T18:30:00Z"
+                          venue:
+                            type: string
+                            example: "Stadium A"
+                          opponent:
+                            type: string
+                            example: "Frogs United"
+                          finalized:
+                            type: boolean
+                            example: false
+          '204':
+            description: No games found
+
+
 
 components:
   schemas:
