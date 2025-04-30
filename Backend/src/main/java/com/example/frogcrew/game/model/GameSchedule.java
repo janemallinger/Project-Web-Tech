@@ -34,6 +34,9 @@ public class GameSchedule {
     public Long getScheduleId() {
         return scheduleId;
     }
+    public void setScheduleId(Long scheduleId) {
+        this.scheduleId = scheduleId;
+    }
 
     public String getSport() {
         return sport;
@@ -42,4 +45,5 @@ public class GameSchedule {
     public String getSeason() {
         return season;
     }
+
 }

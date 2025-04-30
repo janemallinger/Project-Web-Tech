@@ -19,12 +19,10 @@ public class GameScheduleController {
 
     private final GameScheduleService gameScheduleService;
     private final GameScheduleDtoToGameSchedule gameScheduleDtoToGameSchedule;
-    private final GameService gameService;
 
     public GameScheduleController(GameScheduleService gameScheduleService, GameScheduleDtoToGameSchedule gameScheduleDtoToGameSchedule, GameService gameService) {
         this.gameScheduleService = gameScheduleService;
         this.gameScheduleDtoToGameSchedule = gameScheduleDtoToGameSchedule;
-        this.gameService = gameService;
     }
     @PostMapping
     public Result createGameSchedule(@Valid @RequestBody GameScheduleDto gameScheduleDTO){

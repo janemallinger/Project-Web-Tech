@@ -26,10 +26,10 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class AvailabilityDtoToAvailabilityConverterTest {
 
-    @Mock // Mock the dependencies
+    @Mock
     CrewMemberRepository crewMemberRepository;
 
-    @Mock // Mock the dependencies
+    @Mock
     GameRepository gameRepository;
 
 
@@ -50,8 +50,7 @@ class AvailabilityDtoToAvailabilityConverterTest {
 
         game = new Game();
         game.setGameId(101L);
-        game.setVenue("Test Stadium"); // Add relevant game details
-
+        game.setVenue("Test Stadium");
         availabilityDto = new AvailabilityDto(
                 crewMember.getUserId(),
                 game.getGameId(),
