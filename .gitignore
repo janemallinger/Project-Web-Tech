@@ -1,6 +1,10 @@
 Backend/availability
 Backend/crewAssignment
+Backend/security
+
 node_modules
 
-.*
+Backend/.idea
 src/.*
+
+
