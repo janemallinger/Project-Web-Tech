@@ -53,6 +53,7 @@ export default {
       
       if (result.flag) {
         this.crewProfiles = result.data;
+        
       } else {
         this.error = result.message;
       }

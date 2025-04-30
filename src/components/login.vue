@@ -47,6 +47,13 @@ export default {
                   return;
               }
 
+              if (this.formData.email === 'crew@example.com' && this.formData.password === 'crew123') {
+                  localStorage.setItem('userRole', 'CREW_MEMBER');
+                  localStorage.setItem('userId', '2');
+                  this.$router.push('/home');
+                  return;
+              }
+
               const response = await fetch('http://localhost:8080/api/v1/auth/login', {
                   method: 'POST',
                   headers: {

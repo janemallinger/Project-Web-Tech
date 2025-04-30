@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     isAdmin() {
-      return localStorage.getItem('userRole') === 'admin';
+      return localStorage.getItem('userRole') === 'ADMIN';
     }
   }
 };

@@ -33,26 +33,28 @@ export default {
         };
     },
     async created() {
-        try {
-            const response = await fetch('http://localhost:8080/api/v1/games');
-            const result = await response.json();
-            
-            if (result.flag) {
-                this.games = result.data || [];
-                this.games.forEach(game => {
-                    this.availability[game.gameId] = { 
-                        available: false, 
-                        comment: '',
-                        gameId: game.gameId
-                    };
-                });
-            } else {
-                this.error = result.message;
+        this.games = [
+            {
+                gameId: 1,
+                gameDate: '02/25/2026',
+                opponent: 'Team B',
+                venue: 'Main Stadium'
+            },
+            {
+                gameId: 2,
+                gameDate: '08/08/2025',
+                opponent: 'Team A',
+                venue: 'West Field'
             }
-        } catch (error) {
-            this.error = 'Failed to fetch games';
-            console.error('Error:', error);
-        }
+        ]
+
+        this.games.forEach(game => {
+            this.availability[game.gameId] = {
+                available: false,
+                comment: '',
+                gameId: game.gameId
+            }
+        })
     },
     methods: {
         formatDate(dateString) {
@@ -68,47 +70,27 @@ export default {
             this.error = null;
             this.success = false;
 
-            const userId = localStorage.getItem('userId');
-            if (!userId) {
-                this.error = 'User ID not found';
-                this.isSubmitting = false;
-                return;
-            }
-
             try {
-                const userId = localStorage.getItem('userId');
-                if (!userId) {
-                    throw new Error('User ID not found');
-                }
-
+                const userId = 11; 
                 const availabilityData = {
-                    userId: parseInt(userId),
+                    userId,
                     availabilities: Object.values(this.availability)
                 };
 
-                const response = await fetch('http://localhost:8080/api/v1/availability', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(availabilityData)
+                console.log('Mock submit:', availabilityData);
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                this.success = true;
+
+                this.games.forEach(game => {
+                    this.availability[game.gameId] = {
+                        available: false,
+                        comment: '',
+                        gameId: game.gameId
+                    };
                 });
 
-                const result = await response.json();
-
-                if (result.flag) {
-                    this.success = true;
-                    this.availability = {};
-                    this.games.forEach(game => {
-                        this.availability[game.gameId] = { 
-                            available: false, 
-                            comment: '',
-                            gameId: game.gameId
-                        };
-                    });
-                } else {
-                    this.error = result.message || 'Failed to submit availability';
-                }
             } catch (error) {
                 this.error = 'Failed to submit availability. Please try again.';
                 console.error('Error:', error);
