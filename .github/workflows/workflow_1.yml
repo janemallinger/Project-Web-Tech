@@ -25,5 +25,5 @@ jobs:
 
       - name: Build and test with Maven
 	working-directory: Backend/
-        run: mvn --batch-mode package
+	run: mvn --batch-mode package
 
