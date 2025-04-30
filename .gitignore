@@ -1,3 +1,6 @@
 Backend/availability
 Backend/crewAssignment
+node_modules
 
+.*
+src/.*

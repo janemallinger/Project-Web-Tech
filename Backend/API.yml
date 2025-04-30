@@ -460,14 +460,18 @@ components:
           type: string
           description: Phone number of the crew member (10 digits or 999-999-9999 format)
           example: 1112223333
+        password:
+          type: string
+          description: Password of crew member
+          example: strong password
         role:
           type: string
           description: Role of the crew member
           example: Assistant Coach
         positions:
-          type: string
+          type: array
           description: Positions held by the crew member
-          example: Midfielder, Coach
+          example: ["Midfielder", "Coach"]
 
     CrewMemberCreationResponseDTO:
       type: object
