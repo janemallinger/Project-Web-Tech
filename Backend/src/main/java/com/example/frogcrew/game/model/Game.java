@@ -92,7 +92,12 @@ public class Game implements Serializable {
     public void setSchedule(GameSchedule schedule) {
         this.schedule = schedule;
     }
-
+    public LocalDate getDate(){
+        return this.gameDate;
+    }
+    public void setDate(LocalDate date){
+        this.gameDate = date;
+    }
 
 
 }

@@ -420,6 +420,261 @@ paths:
                             example: false
           '204':
             description: No games found
+#  use case 7
+  /availability:
+        post:
+          summary: Submit crew member availability for a game
+          description: Allows a crew member to submit whether they are available for a specific game.
+          operationId: addAvailability
+          tags:
+            - Availability
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AvailabilityDto'
+          responses:
+            '201': # Use 201 Created for successful resource creation
+              description: Successfully submitted availability
+              content:
+                application/json:
+                  schema:
+                    # Option 1: If using ResponseEntity<AvailabilityDto>
+                    $ref: '#/components/schemas/AvailabilityDto'
+                    # Option 2: If using your Result object wrapper
+                    # type: object
+                    # properties:
+                    #   flag:
+                    #     type: boolean
+                    #     example: true
+                    #   code:
+                    #     type: integer
+                    #     example: 201
+                    #   message:
+                    #     type: string
+                    #     example: "Add Success"
+                    #   data:
+                    #     $ref: '#/components/schemas/AvailabilityDto'
+            '400':
+              description: Bad request (validation errors on input DTO)
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      flag:
+                        type: boolean
+                        example: false
+                      code:
+                        type: integer
+                        example: 400
+                      message:
+                        type: string
+                        example: "Provided arguments are invalid, see data for details."
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                            example: "userId is required."
+                          gameId:
+                            type: string
+                            example: "gameId is required."
+                          available:
+                            type: string
+                            example: "Available is required."
+            '404':
+              description: Not Found (Referenced CrewMember or Game does not exist)
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      flag:
+                        type: boolean
+                        example: false
+                      code:
+                        type: integer
+                        example: 404
+                      message:
+                        type: string
+                        # Example for user not found, adjust for game not found
+                        example: "Could not find CrewMember with id 99"
+                      data:
+                        type: object
+                        nullable: true
+            '409':
+              description: Conflict (Availability for this user and game already exists)
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      flag:
+                        type: boolean
+                        example: false
+                      code:
+                        type: integer
+                        example: 409
+                      message:
+                        type: string
+                        example: "Availability already exists for user 12 and game 5" # Example message
+                      data:
+                        type: object
+                        nullable: true
+#  use case 6
+  /crewList/{gameId}:
+    get:
+      summary: Get crew list for a specific game
+      description: Retrieves the game details and the list of assigned crew members for a given game ID.
+      operationId: getCrewListForGame
+      tags:
+        - Crew Assignment
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          description: ID of the game for which to retrieve the crew list
+          schema:
+            type: integer
+            format: int64  # Use int64 for Long
+      responses:
+        '200':
+          description: Successfully retrieved the crew list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: true
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Find Success
+                  data:
+                    $ref: '#/components/schemas/CrewListDto' # Reference the new DTO schema
+        '404':
+          description: Game not found by the provided ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flag:
+                    type: boolean
+                    example: false
+                  code:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: "Could not find Game with Id 1" # Example error message
+                  data:
+                    type: object
+                    nullable: true
+
+    # Use Case 23: Admin adds new crew Schedule for a Specific Game
+  /crewSchedule/{gameId}:
+      post:
+        summary: Add or update crew assignments for a specific game
+        description: Saves a list of crew assignments (positions, report times, locations) for the specified game.
+        operationId: addCrewSchedule
+        tags:
+          - Crew Assignment # Add a relevant tag
+        parameters:
+          - name: gameId
+            in: path
+            required: true
+            description: ID of the game for which to add/update the crew schedule
+            schema:
+              type: integer # Changed from string to integer based on Long type
+              format: int64  # Use int64 for Long
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CrewAssignmentDto' # Reference the new DTO schema
+        responses:
+          '200': # Assuming 200 OK for successful addition/update
+            description: Successfully added/updated the crew assignments
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    flag:
+                      type: boolean
+                      example: true
+                    code:
+                      type: integer
+                      example: 200
+                    message:
+                      type: string
+                      example: Add Success
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/CrewAssignmentDto' # Returns the saved assignments
+          '400':
+            description: Bad request (validation errors on the list of assignments)
+            content:
+              application/json:
+                schema:
+                  # Assuming a standard Spring Boot validation error response structure
+                  # or your custom error structure if you have one.
+                  # This example shows a potential structure matching your other 400s.
+                  type: object
+                  properties:
+                    flag:
+                      type: boolean
+                      example: false
+                    code:
+                      type: integer
+                      example: 400
+                    message:
+                      type: string
+                      example: "Provided arguments are invalid, see data for details."
+                    data:
+                      type: object
+                      # Example validation errors - specific fields depend on what failed
+                      properties:
+                        # Errors might be keyed by list index and field name
+                        '[0].position':
+                          type: string
+                          example: "Position is required"
+                        '[1].reportTime':
+                          type: string
+                          example: "Report time is required"
+
+          '404':
+            description: Game not found by the provided ID
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    flag:
+                      type: boolean
+                      example: false
+                    code:
+                      type: integer
+                      example: 404
+                    message:
+                      type: string
+                      example: "Could not find Game with Id 99" # Example error message
+                    data:
+                      type: object
+                      nullable: true
+
+
 
 
 
@@ -471,7 +726,7 @@ components:
         positions:
           type: array
           description: Positions held by the crew member
-          example: ["Midfielder", "Coach"]
+          example: [ "Midfielder", "Coach" ]
 
     CrewMemberCreationResponseDTO:
       type: object
@@ -571,6 +826,107 @@ components:
         role:
           type: string
           example: "Assistant Coach"
+    AvailabilityDto:
+      type: object
+      required:
+        - userId
+        - gameId
+        - available
+      properties:
+        userId:
+          type: integer # Or Long
+          description: The ID of the crew member submitting availability.
+          example: 15
+        gameId:
+          type: integer # Or Long
+          description: The ID of the game for which availability is being submitted.
+          example: 101
+        available:
+          type: boolean
+          description: True if the crew member is available, false otherwise.
+          example: true
+        comment:
+          type: string
+          description: Optional comment regarding availability.
+          example: "Might be 15 minutes late"
+          nullable: true
+    CrewAssignmentDto:
+        type: object
+        description: Represents a single crew assignment for a game.
+        properties:
+          crewedUserId:
+            type: integer
+            format: int64
+            description: The unique ID of this specific assignment entry (null if creating).
+            nullable: true
+            example: 1
+          userId:
+            type: integer
+            format: int64
+            description: The ID of the assigned CrewMember.
+            example: 101
+          gameId:
+            type: integer
+            format: int64
+            description: The ID of the game this assignment belongs to.
+            example: 1
+          position:
+            type: string
+            description: The position assigned to the crew member for this game.
+            example: "Camera 1"
+          fullName:
+            type: string
+            description: The full name of the assigned crew member (read-only, derived data).
+            example: "Jane Doe"
+            readOnly: true
+          reportTime:
+            type: string
+            format: time # OpenAPI format for LocalTime
+            description: The required report time for the crew member (e.g., HH:mm:ss).
+            example: "15:00:00"
+          reportLocation:
+            type: string
+            description: The location where the crew member should report.
+            example: "Gate A"
+        required: # Based on @NotNull/@NotBlank annotations
+          - userId
+          - gameId
+          - position
+          - reportTime
+          - reportLocation
+
+    CrewListDto:
+        type: object
+        description: Represents the details of a game and its assigned crew.
+        properties:
+          gameId:
+            type: integer
+            format: int64
+            description: The unique ID of the game.
+            example: 1
+          gameStart:
+            type: string
+            description: The start time or general date/time indicator for the game (currently mapped from game date).
+            example: "2025-09-15"
+          gameDate:
+            type: string
+            description: The date of the game (currently mapped from game date).
+            example: "2025-09-15"
+          venue:
+            type: string
+            description: The venue where the game takes place.
+            example: "Home Stadium"
+          opponent:
+            type: string
+            description: The opponent team for the game.
+            example: "Rival U"
+          crewedMembers:
+            type: array
+            description: A list of crew members assigned to this game.
+            items:
+              $ref: '#/components/schemas/CrewAssignmentDto'
+
+
 
   responses:
     InvalidRequest:

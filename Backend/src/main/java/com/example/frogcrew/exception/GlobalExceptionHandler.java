@@ -63,12 +63,18 @@ public class GlobalExceptionHandler {
         if (ex.getRootCause() instanceof DateTimeParseException) {
             // Handle date format issues
             return new Result(false, HttpStatus.BAD_REQUEST.value(),
-                    "Invalid date format provided. Please use the format YYYY-MM-DD.", null);
+                    "Invalid date format provided. Please use the format YYYY-MM-DD for year or HH:mm:[ss] for time", null);
         }
 
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("message", "Invalid JSON format");
 
         return new Result(false, HttpStatus.BAD_REQUEST.value(), ex.getMessage(), errorMap);
+    }
+    @ExceptionHandler(ConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public Result handleConflict(ConflictException ex){
+        return new Result(false, HttpStatus.CONFLICT.value(), ex.getMessage());
     }
 }
