@@ -34,6 +34,7 @@ export default {
             password: "000-000-0000", 
             role: "Crew",
             positions: ["Camera"],
+            phoneNumber: "0000000000",
           })
         })
 
