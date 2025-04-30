@@ -8,9 +8,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasSize;
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class AssignmentControllerTest {
@@ -36,8 +37,11 @@ class AssignmentControllerTest {
     @Autowired
     MockMvc mockMvc; // For simulating HTTP requests
 
-    @MockBean // Creates a Mockito mock and registers it in the ApplicationContext
+    @MockBean
     AssignmentService assignmentService;
+
+    @Value("${api.base-path}")
+    private String baseUrl;
 
     @Autowired
     ObjectMapper objectMapper; // For JSON conversion
@@ -72,7 +76,7 @@ class AssignmentControllerTest {
         given(assignmentService.getCrewListForGame(1L)).willReturn(crewListDto);
 
         // When & Then
-        mockMvc.perform(get("/crewList/1").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(baseUrl+"/crewList/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.flag", is(true)))
                 .andExpect(jsonPath("$.code", is(HttpStatus.OK.value())))
@@ -98,7 +102,7 @@ class AssignmentControllerTest {
         given(assignmentService.getCrewListForGame(1L)).willReturn(emptyCrewListDto);
 
         // When & Then
-        mockMvc.perform(get("/crewList/1").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(baseUrl+"/crewList/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.flag", is(true)))
                 .andExpect(jsonPath("$.code", is(HttpStatus.OK.value())))
@@ -124,7 +128,7 @@ class AssignmentControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(inputDtos);
 
         // When & Then
-        mockMvc.perform(post("/crewSchedule/1")
+        mockMvc.perform(post(baseUrl+"/crewSchedule/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest)
                         .accept(MediaType.APPLICATION_JSON))
@@ -150,7 +154,7 @@ class AssignmentControllerTest {
         // When & Then
         // We expect Spring Boot's default validation handling to return a 400 Bad Request
 
-        mockMvc.perform(post("/crewSchedule/1")
+        mockMvc.perform(post(baseUrl+"/crewSchedule/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest)
                         .accept(MediaType.APPLICATION_JSON))

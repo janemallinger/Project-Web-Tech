@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -77,4 +78,7 @@ public class GlobalExceptionHandler {
     public Result handleConflict(ConflictException ex){
         return new Result(false, HttpStatus.CONFLICT.value(), ex.getMessage());
     }
+
+
+
 }

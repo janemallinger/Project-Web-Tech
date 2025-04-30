@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+
+import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "CrewMembers")
@@ -41,6 +43,24 @@ public class CrewMember {
     private List<String> qualifiedPositions;
 
     public CrewMember() {}
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUsername() {
+        return email;
+    }
+
+
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    public boolean isEnabled() {
+        return true;
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -95,10 +115,6 @@ public class CrewMember {
 
     public void setQualifiedPositions(List<String> qualifiedPositions) {
         this.qualifiedPositions = qualifiedPositions;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
