@@ -41,7 +41,7 @@ export default {
         const result = await response.json()
 
         if(response.ok && result.flag) {
-          this.$router.push('/success')
+          this.$router.push('/')
         } else {
           alert(result.message || "Registration failed")
         }

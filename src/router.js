@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import registration from './components/registration.vue';
 import confirmation from './components/confirmation.vue';
 import success from './components/success.vue';
-// import login from './components/login.vue';
+import login from './components/login.vue';
 import home from './components/home.vue';
 import crewProfileList from './components/crewProfileList.vue';
 import crewProfile from './components/crewProfile.vue';
@@ -15,10 +15,10 @@ import addGameToSchedule from './components/addGameToSchedule.vue';
 import scheduleCrew from './components/scheduleCrew.vue';
 
 const routes = [
-  { path: '/', component: registration, name: 'registration' },
+  { path: '/', component: login, name: 'login' },
+  { path: '/register', component: registration, name: 'registration' },
   { path: '/confirmation', component: confirmation, name: 'confirmation' }, 
   { path: '/success', component: success, name: 'success' },
-  // { path: '/login', component: login, name: 'login' },
   { path: '/home', component: home, name: 'home'},
   { path: '/crewProfileList', component: crewProfileList, name: 'crewProfileList'},
   { path: '/crew/:id', component: crewProfile, name: 'crewProfile' },
@@ -36,14 +36,21 @@ const router = createRouter({
   routes,
 });
 
+
 router.beforeEach((to, from, next) => {
   const role = localStorage.getItem('userRole');
-  if (to.name === 'inviteCrew' && role!== 'admin') {
-    alert('This is an admin feature only.')
-    next({ name: 'home' })
+  
+  // Public routes that don't require authentication
+  const publicRoutes = ['login', 'registration', 'confirmation', 'success'];
+  
+  if (!publicRoutes.includes(to.name) && !role) {
+    next({ name: 'login' });
+  } else if (to.name === 'inviteCrew' && role !== 'ADMIN') {
+    alert('This is an admin feature only.');
+    next({ name: 'home' });
   } else {
-    next()
+    next();
   }
-})
+});
 
 export default router;

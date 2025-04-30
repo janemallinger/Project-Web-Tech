@@ -4,35 +4,24 @@
 
         <form @submit.prevent="submitSchedule">
             <div class="schedule-characteristics">
-                <label>Date: </label>
-                <input type="date" v-model="scheduleData.date" required />
+                <label>Sport: </label>
+                <input type="text" v-model="scheduleData.sport" required />
             </div>
 
             <div class="schedule-characteristics">
-                <label>Time: </label>
-                <input type="time" v-model="scheduleData.time" required />
+                <label>Season: </label>
+                <input type="text" v-model="scheduleData.season" required pattern="^[0-9]{4}-[0-9]{4}$" placeholder="YYYY-YYYY" />
             </div>
 
-            <div class="schedule-characteristics">
-                <label>Location: </label>
-                <input type="text" v-model="scheduleData.venue" required />
-            </div>
-
-            <div class="schedule-characteristics">
-                <label>Opponent: </label>
-                <input type="text" v-model="scheduleData.team" />
-            </div>
-
-            <div class="schedule-characteristics">
-                <label>Required Crew: </label>
-                <input type="text" v-model="scheduleData.crewPositions" required />
-            </div>
-
-            <button type="submit" class="submit-button">Save</button>
+            <button type="submit" class="submit-button" :disabled="isSubmitting">Save</button>
         </form>
 
-        <div v-if="saved" class="success">
-            Game schedule was saved as a draft
+        <div v-if="error" class="error-message">
+            {{ error }}
+        </div>
+
+        <div v-if="success" class="success-message">
+            Game schedule created successfully
         </div>
     </div>
 </template>
@@ -42,78 +31,52 @@ export default {
     data() {
         return {
             scheduleData: {
-                date: '',
-                time: '',
-                team: '',
-                venue: '',
-                crewPositions: ['Camera', 'Talent'],
+                sport: '',
+                season: ''
             },
-            saved: false
+            isSubmitting: false,
+            error: null,
+            success: false
         };
     },
-  methods: {
-    async submitSchedule() {
-      try {
-        const response = await fetch('http://localhost:8080/api/createSchedule', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(this.scheduleData),
-        });
+    methods: {
+        async submitSchedule() {
+            this.isSubmitting = true;
+            this.error = null;
+            this.success = false;
 
-        if (!response.ok) {
-          throw new Error('Failed to create schedule');
-        }
+            try {
+                const response = await fetch('http://localhost:8080/api/v1/gameSchedule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.scheduleData)
+                });
 
-        this.saved = true
+                const result = await response.json();
 
-        this.$router.push({ name: 'gameSchedule' })
-
-        this.scheduleData = {
-            date: '',
-            time: '',
-            team: '',
-            venue: '',
-            crewPositions: '',
-        }
-
-        this.$router.push({ name: 'gameSchedule' });
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Error creating schedule');
-      }
-
-    //         newSchedule: {
-    //             sport: '',
-    //             dateTime: '',
-    //             location: '',
-    //             opponent: '',
-    //             requiredCrew: ''
-    //         },
-    //         saved: false,
-    //     }
-    // },
-    // methods: {
-    //     submitSchedule() {
-    //         if(!this.newSchedule.sport || !this.newSchedule.dateTime || !this.newSchedule.location || !this.newSchedule.requiredCrew) {
-    //             alert('Fill out all required fields.')
-    //             return;
-    //         }
-    //         console.log('Schedule saved:', this.newSchedule)
-    //         this.saved = true
-
-    //         this.newSchedule = {
-    //             sport: '',
-    //             dateTime: '',
-    //             location: '',
-    //             opponent: '',
-    //             requiredCrew: ''
-    //         }
+                if (result.flag) {
+                    this.success = true;
+                    this.scheduleData = {
+                        sport: '',
+                        season: ''
+                    };
+                    setTimeout(() => {
+                        this.$router.push({ name: 'gameSchedule' });
+                    }, 1500);
+                } else {
+                    this.error = result.message || 'Failed to create schedule';
+                }
+            } catch (error) {
+                this.error = 'Failed to create schedule. Please try again.';
+                console.error('Error creating schedule:', error);
+            } finally {
+                this.isSubmitting = false;
+            }
         }
     }
-}
-
+};
 </script>
 
 <style scoped>
@@ -141,7 +104,7 @@ label {
     margin-bottom: 6px;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
@@ -157,18 +120,33 @@ input {
     cursor: pointer;
     display: block;
     margin: 0 auto;
-
-    &:hover {
-        background-color: #7700cc;
-    }
 }
 
-.success {
+.submit-button:hover {
+    background-color: #7700cc;
+}
+
+.submit-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.success-message {
     margin-top: 20px;
     padding: 10px;
     background-color: lightgreen;
     border: 1px solid #70db70;
     color: #207250;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.error-message {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
     text-align: center;
     border-radius: 5px;
 }

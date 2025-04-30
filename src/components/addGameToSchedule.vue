@@ -28,11 +28,20 @@
                 <input type="text" v-model="newGame.requiredCrew" required />
             </div>
 
+            <div class="game-characteristics">
+                <label>Finalize Game: </label>
+                <input type="checkbox" v-model="newGame.isFinalized" />
+            </div>
+
             <button type="submit" class="submit-button">Add Game</button>
         </form>
 
-        <div v-if="saved" class="success-message">
+        <div v-if="success" class="success-message">
             New game added successfully
+        </div>
+
+        <div v-if="error" class="error-message">
+            {{ error }}
         </div>
     </div>
 </template>
@@ -46,27 +55,92 @@ export default {
                 dateTime: '',
                 location: '',
                 opponent: '',
-                requiredCrew: ''
+                requiredCrew: '',
+                isFinalized: false
             },
-            saved: false,
+            isSubmitting: false,
+            error: null,
+            success: false
         }
     },
     methods: {
-        submitNewGame() {
+        async submitNewGame() {
             if(!this.newGame.sport || !this.newGame.dateTime || !this.newGame.location || !this.newGame.requiredCrew) {
-                alert('Fill out all required fields.')
+                this.error = 'Please fill out all required fields.';
                 return;
             }
 
-            console.log('New game to be added: ', this.newGame)
-            this.saved = true;
+            this.isSubmitting = true;
+            this.error = null;
+            this.success = false;
 
-            this.newGame = {
-                sport: '',
-                dateTime: '',
-                location: '',
-                opponent: '',
-                requiredCrew: ''
+            try {
+                const scheduleResponse = await fetch('http://localhost:8080/api/v1/gameSchedule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sport: this.newGame.sport,
+                        season: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`
+                    })
+                });
+
+                if (!scheduleResponse.ok) {
+                    const scheduleError = await scheduleResponse.text();
+                    console.error('Schedule creation failed:', scheduleError);
+                    throw new Error(`Failed to create schedule: ${scheduleError}`);
+                }
+
+                const scheduleResult = await scheduleResponse.json();
+                console.log('Schedule created:', scheduleResult);
+                const scheduleId = scheduleResult.data.scheduleId;
+
+                const formattedDate = new Date(this.newGame.dateTime).toISOString();
+
+                const gameResponse = await fetch(`http://localhost:8080/api/v1/gameSchedule/${scheduleId}/games`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        opponent: this.newGame.opponent,
+                        gameDate: formattedDate,
+                        venue: this.newGame.location,
+                        isFinalized: this.newGame.isFinalized
+                    })
+                });
+
+                if (!gameResponse.ok) {
+                    const gameError = await gameResponse.text();
+                    console.error('Game creation failed:', gameError);
+                    throw new Error(`Failed to add game: ${gameError}`);
+                }
+
+                const gameResult = await gameResponse.json();
+                console.log('Game added:', gameResult);
+
+                if (gameResult.flag) {
+                    this.success = true;
+                    this.newGame = {
+                        sport: '',
+                        dateTime: '',
+                        location: '',
+                        opponent: '',
+                        requiredCrew: '',
+                        isFinalized: false
+                    };
+                    setTimeout(() => {
+                        this.$router.push({ name: 'gameSchedule' });
+                    }, 1500);
+                } else {
+                    this.error = gameResult.message || 'Failed to add game';
+                }
+            } catch (error) {
+                console.error('Full error:', error);
+                this.error = error.message || 'Failed to add game. Please try again.';
+            } finally {
+                this.isSubmitting = false;
             }
         }
     }
@@ -126,6 +200,16 @@ input {
     background-color: lightgreen;
     border: 1px solid #70db70;
     color: #207250;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.error-message {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #ffd7d7;
+    border: 1px solid #ff7070;
+    color: #722020;
     text-align: center;
     border-radius: 5px;
 }

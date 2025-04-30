@@ -1,39 +1,37 @@
 <template>
   <div>
-  <div class="sorts-and-filters">
-    <label>
-      Sort By:
-      <select v-model="sortKey">
-        <option value="name">Name</option>
-        <option value="job">Job</option>
-      </select>
-    </label>
+    <div class="sorts-and-filters">
+      <label>
+        Sort By:
+        <select v-model="sortKey">
+          <option value="firstName">Name</option>
+          <option value="role">Role</option>
+        </select>
+      </label>
 
-    <label>
-      Filter By:
-      <select v-model="filterStatus">
-        <option value="all">All</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-      </select>
-    </label>
+      <label>
+        Filter By:
+        <select v-model="filterRole">
+          <option value="all">All</option>
+          <option value="ADMIN">Admin</option>
+          <option value="CREW_MEMBER">Crew Member</option>
+        </select>
+      </label>
+    </div>
 
     <div class="crew-list">
-        <div v-for="profile in sortedProfiles" :key="profile.id" class="crew-card">
-        <h2>{{ profile.name }}</h2>
-        <p>{{ profile.position }}</p>
-        <p>{{ profile.status }}</p>
+      <div v-for="profile in sortedProfiles" :key="profile.userId" class="crew-card">
+        <h2>{{ profile.fullName }}</h2>
+        <p>Email: {{ profile.email }}</p>
+        <p>Phone: {{ profile.phoneNumber }}</p>
         <router-link :to="{
-            name: 'crewProfile',
-            params: { id: profile.id },
-            query: { name: profile.name, email: profile.email, phoneNumber: profile.phoneNumber }
-            }"
-          class="view-profile">View Profile</router-link>
-          <button v-if="isAdmin" @click="confirmDelete(profile)" class="delete-button">Delete Crew Member</button>
+          name: 'crewProfile',
+          params: { id: profile.userId }
+        }"
+        class="view-profile">View Profile</router-link>
+        <button v-if="isAdmin" @click="confirmDelete(profile)" class="delete-button">Delete Crew Member</button>
       </div>
     </div>
-  </div>
-    
   </div>
 </template>
 
@@ -42,161 +40,139 @@ export default {
   data() {
     return {
       crewProfiles: [],
+      isAdmin: localStorage.getItem('userRole') === 'ADMIN',
+      sortKey: 'firstName',
+      filterRole: 'all',
+      error: null
     };
   },
   async created() {
     try {
-      const response = await fetch('http://localhost:8080/api/crewProfiles');
-      if (!response.ok) {
-        throw new Error('Failed to load crew profiles');
+      const response = await fetch('http://localhost:8080/api/v1/crewMember');
+      const result = await response.json();
+      
+      if (result.flag) {
+        this.crewProfiles = result.data;
+      } else {
+        this.error = result.message;
       }
-      this.crewProfiles = await response.json();
     } catch (error) {
+      this.error = 'Failed to fetch crew profiles';
       console.error('Error:', error);
-      alert('Error fetching crew profiles.');
     }
   },
-// data() {
-//   return {
-//     crewProfiles: [],
-//     isAdmin: localStorage.getItem('userRole') === 'admin',
-//     sortKey: 'name',
-//     filterStatus: 'all',
-//   }
-// },
-// mounted() {
-//   this.crewProfiles = [
-//     {
-//       id: 1,
-//       name: "Alex Johnson",
-//       position: "Producer",
-//       email: "alexj@gmail.com",
-//       phoneNumber: "555-1234",
-//       status: "active"
-//     },
-//     {
-//       id: 2,
-//       name: "Brittany Smith",
-//       position: "Camera",
-//       email: "bsmith@gmail.com",
-//       phoneNumber: "555-5678",
-//       status: "inactive"
-//     },
-//     {
-//       id: 3,
-//       name: "Carlos Diaz",
-//       position: "Talent",
-//       email: "carlosdiaz@gmail.com",
-//       phoneNumber: "555-9012",
-//       status: "active"
-//     }
-//   ]
-// },
-methods: {
-  confirmDelete(profile) {
-    const confirmed = window.confirm (
-      `Do you want to delete ${profile.name}?`
-    )
-    if (confirmed) {
-      this.deleteCrewMember(profile.id)
+  methods: {
+    async confirmDelete(profile) {
+      const confirmed = window.confirm(
+        "Do you want to delete this user?"
+      );
+      if (confirmed) {
+        await this.deleteCrewMember(profile.userId);
+      }
+    },
+    async deleteCrewMember(id) {
+      try {
+        const response = await fetch(`http://localhost:8080/api/v1/crewMember/${id}`, {
+          method: 'DELETE'
+        });
+        const result = await response.json();
+        
+        if (result.flag) {
+          this.crewProfiles = this.crewProfiles.filter(profile => profile.userId !== id);
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error('Error deleting crew member:', error);
+        alert('Failed to delete crew member');
+      }
     }
   },
-  deleteCrewMember(id) {
-    this.crewProfiles = this.crewProfiles.filter(profile => profile.id !== id)
-    alert('Crew member has been deleted')
-  }
-},
-computed: {
-  sortedProfiles() {
-    let filtered = this.crewProfiles
+  computed: {
+    sortedProfiles() {
+      let filtered = this.crewProfiles;
 
-    if (this.filterStatus !== 'all') {
-      filtered = filtered.filter(profile => profile.status === this.filterStatus)
+      if (this.filterRole !== 'all') {
+        filtered = filtered.filter(profile => profile.role === this.filterRole);
+      }
+
+      return filtered.sort((a, b) => {
+        if (a[this.sortKey] < b[this.sortKey]) return -1;
+        if (a[this.sortKey] > b[this.sortKey]) return 1;
+        return 0;
+      });
     }
-
-    return filtered.sort((a, b) => {
-      if(a[this.sortKey] < b[this.sortKey]) return -1
-      if(a[this.sortKey] > b[this.sortKey]) return 1
-      return 0
-    })
   }
-}
-}
-
+};
 </script>
 
 <style scoped>
 .crew-list {
-text-align: center;
-font-family: 'Arial', sans-serif;
-padding: 50px;
-display: flex;
-justify-content: center;
-gap: 20px;
-flex-wrap: wrap;
-margin-top: 30px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
 }
 
-
 .crew-card {
-text-align: center;
-background-color: #f8f8f8;
-border: 1px solid #ddd;
-border-radius: 10px;
-width: 200px;
-padding: 20px;
-color: purple;
-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 200px;
+  padding: 20px;
+  color: purple;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .view-profile {
-display: inline-block;
-margin-top: 10px;
-color: white;
-background-color: purple;
-padding: 5px 10px;
-border-radius: 5px;
-text-decoration: none;
-
-&:hover {
-background-color: #7700cc;
+  display: inline-block;
+  margin-top: 10px;
+  color: white;
+  background-color: purple;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-decoration: none;
 }
+
+.view-profile:hover {
+  background-color: #7700cc;
 }
 
 .delete-button {
-margin-top: 10px;
-background-color: purple;
-color: white;
-border: none;
-padding: 6px 12px;
-border-radius: 5px;
-cursor: pointer;
+  margin-top: 10px;
+  background-color: purple;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-&:hover {
+.delete-button:hover {
   background-color: #7700cc;
 }
+
+.sorts-and-filters {
+  color: #7700cc;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.sorts-filters {
-color: #7700cc;
-text-align: center;
-margin-top: 20px;
-margin-bottom: 20px;
-
-&:label {
+.sorts-and-filters label {
   color: #7700cc;
   margin: 0 10px;
   font-family: 'Arial', sans-serif;
 }
-}
-
 
 select {
-color: #7700cc;
-margin-left: 5px;
-padding: 5px;
+  color: #7700cc;
+  margin-left: 5px;
+  padding: 5px;
 }
-
-
-
 </style>

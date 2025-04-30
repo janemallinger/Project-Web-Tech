@@ -3,96 +3,121 @@
         <h1>Submit Availability</h1>
 
         <form @submit.prevent="handleSubmit">
-            <div class="game-card" v-for="game in games" :key="game.id">
-                <h3>{{ game.date }} - {{ game.team }}</h3>
-                <p><strong>Time: </strong> {{ game.time }}</p>
+            <div class="game-card" v-for="game in games" :key="game.gameId">
+                <h3>{{ formatDate(game.gameDate) }} - vs {{ game.opponent }}</h3>
                 <p><strong>Venue: </strong> {{ game.venue }}</p>
 
                 <label>
-                    <input type="checkbox" v-model="availability[game.id].available" />I can work this game
+                    <input type="checkbox" v-model="availability[game.gameId].available" />I can work this game
                 </label>
-                    <textarea v-model="availability[game.id].comment" placeholder="Further Information"></textarea>
-                </div>
+                <textarea v-model="availability[game.gameId].comment" placeholder="Further Information"></textarea>
+            </div>
 
-                <button type="submit" class="submit-button">Submit Availability</button>
+            <button type="submit" class="submit-button" :disabled="isSubmitting">Submit Availability</button>
         </form>
 
-        <div v-if="submitted" class="success-message">You have submitted your availability!</div>
+        <div v-if="error" class="error-message">{{ error }}</div>
+        <div v-if="success" class="success-message">You have submitted your availability!</div>
     </div>
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                submitted: false,
-                games: [
-                    {
-                        id: 1,
-                        date: '05/01/2025',
-                        time: '10:00 AM',
-                        team: 'Team B',
-                        venue: 'Stadium A',
-                    },
-                    {
-                        id: 2,
-                        date: '05/03/2025',
-                        time: '02:00 PM',
-                        team: 'Team A',
-                        venue: 'Stadium B',
-                    },
-                    {
-                        id: 3,
-                        date: '05/05/2025',
-                        time: '01:30 PM',
-                        team: 'Team C',
-                        venue: 'Stadium C',
-                    }
-                ],
-                availability: {},
-            };
-        },
-        created() {
-            this.games.forEach(game => {
-                this.availability[game.id] = { available: false, comment: ''};
+export default {
+    data() {
+        return {
+            games: [],
+            availability: {},
+            isSubmitting: false,
+            error: null,
+            success: false
+        };
+    },
+    async created() {
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/games');
+            const result = await response.json();
+            
+            if (result.flag) {
+                this.games = result.data || [];
+                this.games.forEach(game => {
+                    this.availability[game.gameId] = { 
+                        available: false, 
+                        comment: '',
+                        gameId: game.gameId
+                    };
+                });
+            } else {
+                this.error = result.message;
+            }
+        } catch (error) {
+            this.error = 'Failed to fetch games';
+            console.error('Error:', error);
+        }
+    },
+    methods: {
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
         },
-        methods: {
-            async handleSubmit() {
-                const selected = this.games.filter(game => this.availability[game.id].available);
+        async handleSubmit() {
+            this.isSubmitting = true;
+            this.error = null;
+            this.success = false;
 
-                if (selected.length === 0) {
-                    alert('Must mark at least one game as available.');
-                    return;
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                this.error = 'User ID not found';
+                this.isSubmitting = false;
+                return;
+            }
+
+            try {
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    throw new Error('User ID not found');
                 }
 
-                try {
-                    const response = await fetch('http://localhost:8080/api/submit-availability', {
-                        method: 'POST',
-                        headers: {
-                            'COntent-Type': 'application/json'
-                        },
-                        body: JSON.stringify(this.availability)
-                    })
+                const availabilityData = {
+                    userId: parseInt(userId),
+                    availabilities: Object.values(this.availability)
+                };
 
-                    if(!response.ok) {
-                        throw new Error('Availability submit failed')
-                    }
+                const response = await fetch('http://localhost:8080/api/v1/availability', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(availabilityData)
+                });
 
-                    this.submitted = true
+                const result = await response.json();
 
-                } catch (error) {
-                    console.error('Error: ', error)
-                    alert('Something went wrong.')
-                    
+                if (result.flag) {
+                    this.success = true;
+                    this.availability = {};
+                    this.games.forEach(game => {
+                        this.availability[game.gameId] = { 
+                            available: false, 
+                            comment: '',
+                            gameId: game.gameId
+                        };
+                    });
+                } else {
+                    this.error = result.message || 'Failed to submit availability';
                 }
-
-                console.log('Submitted availability:', this.availability);
-                this.submitted = true;
+            } catch (error) {
+                this.error = 'Failed to submit availability. Please try again.';
+                console.error('Error:', error);
+            } finally {
+                this.isSubmitting = false;
             }
         }
-    };
-
+    }
+};
 </script>
 
 <style scoped>
@@ -144,6 +169,16 @@ textarea {
     background-color: lightgreen;
     border: 1px solid #70db70;
     color: #207520;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.error-message {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
     text-align: center;
     border-radius: 5px;
 }
