@@ -1,7 +1,7 @@
 name: Build and deploy a container to an Azure Web App
 
 env:
-  AZURE_WEBAPP_NAME: frogcrew-Sameep-Shah # Change this to your webapp name.
+  AZURE_WEBAPP_NAME: web-tech-app
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build with Maven
-        working-directory: ./backend/frogcrew
+        working-directory: ./Backend
         run: mvn --batch-mode --update-snapshots package -DskipTests
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
