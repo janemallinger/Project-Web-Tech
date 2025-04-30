@@ -58,12 +58,33 @@
             });
         },
         methods: {
-            handleSubmit() {
+            async handleSubmit() {
                 const selected = this.games.filter(game => this.availability[game.id].available);
 
                 if (selected.length === 0) {
                     alert('Must mark at least one game as available.');
                     return;
+                }
+
+                try {
+                    const response = await fetch('http://localhost:8080/api/submit-availability', {
+                        method: 'POST',
+                        headers: {
+                            'COntent-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.availability)
+                    })
+
+                    if(!response.ok) {
+                        throw new Error('Availability submit failed')
+                    }
+
+                    this.submitted = true
+
+                } catch (error) {
+                    console.error('Error: ', error)
+                    alert('Something went wrong.')
+                    
                 }
 
                 console.log('Submitted availability:', this.availability);

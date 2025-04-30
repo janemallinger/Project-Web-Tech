@@ -29,14 +29,33 @@ export default {
         };
     },
     methods: {
-        inviteHandler() {
+        async inviteHandler() {
             this.error = ''
             this.success = ''
 
-            console.log('Sending invite to: ', this.email)
+            try {
+                const response = await fetch('/api/admin/invite', {
+                    method: 'POST',
+                    Headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: this.email })
+                })
 
-            this.success = `Invite sent to ${this.email}`
-            this.email = ''
+                if (!response.ok) {
+                    const errorData = await response.json()
+                    this.error = errorData.message || 'Failed to send invite.'
+                    return
+                }
+                
+                this.success = `Invite sent to ${this.email}`
+                this.email = ''
+                
+            } catch (error) {
+                this.error = 'An error occured while sending the invite'
+                console.error(error)
+                
+            }
         }
     }
 }
